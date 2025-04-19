@@ -1,3 +1,5 @@
+package practica;
+
 import java.util.Date;
 public abstract class Producto {
 	//Atributos
