@@ -1,7 +1,6 @@
 package practica;
 
 import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 public class Bebida extends Producto {
 
