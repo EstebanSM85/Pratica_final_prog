@@ -51,7 +51,7 @@ public abstract class Producto {
 	
     
 	//métodos abstractos
-	public abstract String obtener_caducidad(); 
+	public abstract Date obtener_caducidad(); 
 	
 	public abstract String detalle_producto();
 
