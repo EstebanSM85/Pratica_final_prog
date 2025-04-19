@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 public class Comida extends Producto {
 	
-	//Atributos de la clase comida
+	//Atributos propios de la clase comida
 	private boolean perecedero;
 	private float calorias;
 	private boolean vegano;
@@ -54,8 +54,8 @@ public class Comida extends Producto {
 
 	@Override
     public Date obtener_caducidad() {
-        if (perecedero) { // Si perecedero es true
-            Calendar tiempo = Calendar.getInstance();
+        if (perecedero) { // Si perecedero es true, devuelve la fecha de caducidad introducidad más 10 días 
+            Calendar tiempo = Calendar.getInstance(); //Instancio la clase Calendar para usarla
             tiempo.setTime(fecha_envase); // Introduzco la fecha de envasasado
             tiempo.add(Calendar.DAY_OF_YEAR, 10); // Sumo los 10 días
             
@@ -72,7 +72,7 @@ public class Comida extends Producto {
 		        "\nPrecio: " + getPrecio() +
 		        "\nFecha de Caducidad: " +getCaducidad() +
 		        "\nEstado: " + getEstado() +
-		        "\nPerecedero: " + (isPerecedero() ? "Sí" : "No") + //Uso un el operador ? para que si es tur ponga si y si es false ponga no
+		        "\nPerecedero: " + (isPerecedero() ? "Sí" : "No") + //Uso un el operador ? para que si es true ponga si y si es false ponga no
 		        "\nCalorías: " + getCalorias() +
 		        "\nVegano: " + (isVegano() ? "Sí" : "No") +
 		        "\nFecha de Envase: " + getFecha_envase();
