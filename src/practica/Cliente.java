@@ -95,7 +95,8 @@ public class Cliente {
 				"\nTeléfono: "+getTelefono()+
 				"\nFecha de alta: "+getFechaAlta()+
 				"\nDirección: "+getDireccion()+
-				"\nHistorial: "+getHistorial();	
+				"\nHistorial: "+getHistorial()+
+				"\nCodigo: "+ getCodigo();
 	}
 	
 }
