@@ -35,7 +35,7 @@ public class GestionCliente {
 	}
 
 	// Método para buscar un cliente por su codigo
-	public Cliente buscarClienteCodigo(int  codigo) {
+	public Cliente buscarCliente(int  codigo) {
 	     for (Cliente cliente : clientes) {
 	         if (cliente.getCodigo()==codigo) {
 	             return cliente;

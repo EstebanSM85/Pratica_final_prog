@@ -8,10 +8,10 @@ public class Bebida extends Producto {
 	private boolean gaseoso;
 	private int medida;
 	private boolean lacteo;
-	private Date fecha_envase;
+	private Date fechaEnvase;
 		
 	//contructor propio de la clase Bebida
-	public Bebida(String nombre, double precio, Date caducidad, String estado, boolean gaseoso, int medida, boolean lacteo, Date Fecha_envase) {
+	public Bebida(String nombre, double precio, Date caducidad, String estado, boolean gaseoso, int medida, boolean lacteo, Date FechaEnvase) {
 		super(nombre, precio, caducidad, estado); // Uso el constructor Abstract
 	    this.gaseoso = gaseoso;
 	    this.medida = medida;
@@ -46,19 +46,19 @@ public class Bebida extends Producto {
 		this.lacteo = lacteo;
 	}
 	
-	public Date getFecha_envase() {
-		return fecha_envase;
+	public Date getFechaEnvase() {
+		return fechaEnvase;
 	}
 
-	public void setFecha_envase(Date fecha_envase) {
-		this.fecha_envase = fecha_envase;
+	public void setFechaEnvase(Date fecha_envase) {
+		this.fechaEnvase = fecha_envase;
 	}
 
 
 	@Override
 	public Date obtener_caducidad() {
 		Calendar tiempo = Calendar.getInstance(); //Instancio la clase Calendar para usarla
-        tiempo.setTime(fecha_envase); // Introduzco la fecha de envasasado
+        tiempo.setTime(fechaEnvase); // Introduzco la fecha de envasasado
 		  if (lacteo) { // Si lacteo es true, devuelve la fecha de caducidad introducidad más 10 días 
 	            tiempo.add(Calendar.DAY_OF_YEAR, 10); // Sumo los 10 días
 	            return tiempo.getTime();// Devuelve la nueva fecha de caducidad como Date
@@ -79,7 +79,7 @@ public class Bebida extends Producto {
 		        "\nPerecedero: " + (isGaseoso() ? "Sí" : "No") + //Uso un el operador ? para que si es true ponga si y si es false ponga no
 		        "\nCalorías: " + getMedida() +
 		        "\nVegano: " + (isLacteo() ? "Sí" : "No") +
-		        "\nFecha de Envase: " + getFecha_envase();
+		        "\nFecha de Envase: " + getFechaEnvase();
 	}
 	
 }
