@@ -12,18 +12,18 @@ public class Cliente {
 	private String direccion;
 	private String historial;
 	private int codigo;
-	private static int contadorCodigo = 1;
+	private static int contadorCodigo = 1;// lo inicio a 1 para que el primer numero asignado sea 1
 
 				
 	//Constructor
 	public Cliente(String nombre, String apellidos,String telefono, String direccion,Date fechaAlta, String historial){
-		this.nombre=nombre.toLowerCase();
-		this.apellidos=apellidos.toUpperCase();
+		this.nombre=nombre;
+		this.apellidos=apellidos;
 		this.telefono=telefono;
 		this.direccion=direccion;
-		this.fechaAlta = new Date();
+		this.fechaAlta = new Date(); //Asigno la fecha actual como fecha de alta
 		this.historial ="";
-		this.codigo = contadorCodigo;  //Aqui le asigno un codigo unico al crear el cliente
+		this.codigo = contadorCodigo;  //Aqui le asigno un codigo único al crear el cliente
         contadorCodigo++;				// Me aseguro que sume uno cada vez que se cree uno
 
 	}
@@ -49,7 +49,7 @@ public class Cliente {
 		return fechaAlta; 
 	} 
 		
-	public void setFechaAlta(Date fechaAlta) { 	// en este setter se pide que si esta nulo la fecha actual
+	public void setFechaAlta(Date fechaAlta) { 	// Aqui si la fecha de alta esta vacio, asignamos la fecha actual
 		if (fechaAlta==null) {
 			this.fechaAlta=new Date();
 		}else {
@@ -61,8 +61,7 @@ public class Cliente {
 		return telefono; 
 	} 
 			
-	// Aquí compruebo  que el número introducido con el setter sea el correcto
-	public void setTelefono(String telefono) {
+	public void setTelefono(String telefono) { // Aquí compruebo  que el número introducido con el setter sea el correcto
 		if (telefono.matches("[6789]\\d{8}+")){
 			this.telefono = telefono;
 		} else {
@@ -90,7 +89,7 @@ public class Cliente {
 		return codigo;
 	}
 	
-	public String mostrar()	{
+	public String mostrar()	{ // Motramos los datos del cliente usando los getter
 		return "Nombre: "+ getNombre()+
 				"\nApellidos: "+getApellidos()+
 				"\nTeléfono: "+getTelefono()+

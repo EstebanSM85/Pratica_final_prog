@@ -2,7 +2,7 @@ package practica;
 
 import java.util.Date;
 public abstract class Producto {
-	//Atributos
+	//Atributos 
 	private String nombre;
     private double precio;
     private Date caducidad; 
@@ -50,7 +50,7 @@ public abstract class Producto {
 	}
 	
     
-	//métodos abstractos
+	//métodos abstractos se inician en las clases que lo usen
 	public abstract Date obtener_caducidad(); 
 	
 	public abstract String detalle_producto();

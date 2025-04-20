@@ -46,22 +46,22 @@ public class Pedido {
     }
 
     public void setFechaPedido(Date fechaPedido) {
-        this.fechaPedido = (fechaPedido != null) ? fechaPedido : new Date();
+        this.fechaPedido = (fechaPedido != null) ? fechaPedido : new Date(); //si la fechaPedido esta vacio, asigno la fecha actual
     }
 
     // Método para calcular el total del pedido
     public double calcularTotal() {
-        double total = 0;
-        for (Producto producto : productos) {
-            total += producto.getPrecio();
+        double total = 0;// se inicia a 0 para poder usarlo
+        for (Producto producto : productos) { // recorre la lista productos
+            total += producto.getPrecio(); // A total le suma el precio del producto 
         }
-        return total;
+        return total; // cuando acaba devuelve la suma total
     }
 
     // Método para mostrar detalles del pedido
     public String mostrarPedido() {
         return "Código Pedido: " + codigoPedido +
-               "\nCliente: " + cliente.getNombre() + " " + cliente.getApellidos() +
+               "\nCliente: " + cliente.getNombre() + " " + cliente.getApellidos() + //Muestra el nombre y apellidos en la misma linea
                "\nFecha Pedido: " + getFechaPedido() +
                "\nProductos: " + getProductos() +
                "\nTotal: " + calcularTotal() + "€";

@@ -2,7 +2,7 @@ package practica;
 
 import java.util.Date;
 import java.util.Calendar;
-public class Comida extends Producto {
+public class Comida extends Producto { //extends Producto porque hereda de esa clase
 	
 	//Atributos propios de la clase comida
 	private boolean perecedero;
@@ -12,14 +12,14 @@ public class Comida extends Producto {
 	
 	 // Constructor
    public Comida(String nombre, double precio, Date caducidad, String estado, boolean perecedero, float calorias, boolean vegano, Date fecha_envase) {
-        super(nombre, precio, caducidad, estado); // Uso el constructor Abstract
+        super(nombre, precio, caducidad, estado); // Uso el constructor Abstract con la palabra reservada super
         this.perecedero = perecedero;
         this.calorias = calorias;
         this.vegano = vegano;
         this.fecha_envase = fecha_envase;
     } 
     
-    public boolean isPerecedero() {
+    public boolean isPerecedero() { 
 		return perecedero;
 	}
     
