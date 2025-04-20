@@ -50,7 +50,7 @@ public class Efectivo extends PasarelaPago {
 	}
 
 	@Override
-    public boolean procesarPago() { // se procesa el cambio
+    public boolean procesarPago() { //sobreescribo el método de la superclase
         System.out.println("Pago en efectivo registrado. Importe: " + getImporte() + "€");
         if (cambio>0) { // se calcula el cambio y se muestra en caso de que sea mayor de 0
         	calcularCambio();
