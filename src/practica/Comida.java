@@ -1,6 +1,8 @@
 package practica;
 
 import java.util.Date;
+import java.util.Scanner;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 public class Comida extends Producto { //extends Producto porque hereda de esa clase
 	
@@ -8,15 +10,17 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
 	private boolean perecedero;
 	private float calorias;
 	private boolean vegano;
-	private Date fecha_envase;
+	private Date fechaEnvase;
 	
 	 // Constructor
-   public Comida(String nombre, double precio, Date caducidad, String estado, boolean perecedero, float calorias, boolean vegano, Date fecha_envase) {
+   public Comida(String nombre, double precio, Date caducidad, String estado, boolean perecedero, float calorias, boolean vegano, Date fechaEnvase) {
         super(nombre, precio, caducidad, estado); // Uso el constructor Abstract con la palabra reservada super
         this.perecedero = perecedero;
         this.calorias = calorias;
         this.vegano = vegano;
-        this.fecha_envase = fecha_envase;
+        this.fechaEnvase = fechaEnvase;
+        this.setCaducidad(obtener_caducidad()); // Calculamos y asignamos la caducidad automáticamente
+
     } 
     
     public boolean isPerecedero() { 
@@ -43,39 +47,61 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
 		this.vegano = vegano;
 	}
 
-	public Date getFecha_envase() {
-		return fecha_envase;
+	public Date getFechaEnvase() {
+		return fechaEnvase;
 	}
 
-	public void setFecha_envase(Date fecha_envase) {
-		this.fecha_envase = fecha_envase;
+	public void setFechaEnvase(Date fecha_envase) {
+		this.fechaEnvase = fecha_envase;
 	}
 
 	@Override
     public Date obtener_caducidad() {
         if (perecedero) { // Si perecedero es true, devuelve la fecha de caducidad introducidad más 10 días 
             Calendar tiempo = Calendar.getInstance(); //Instancio la clase Calendar para usarla
-            tiempo.setTime(fecha_envase); // Introduzco la fecha de envasasado
+            tiempo.setTime(fechaEnvase); // Introduzco la fecha de envasasado
             tiempo.add(Calendar.DAY_OF_YEAR, 10); // Sumo los 10 días
             
             return tiempo.getTime();// Devuelve la nueva fecha de caducidad como Date
         }
-        else {// Si no es perecedero, devuelve la fecha de caducidad introducidad 
-            return getCaducidad(); 
+        else {// Si no es perecedero, devuelve la fecha de caducidad actual 
+            return new Date(); 
         }
     }
 
 	@Override
 	public String detalle_producto() {
-		return "Nombre: " + getNombre() +    //Uso los getter para obtener los datos
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); //Se formatea la fecha para mostrar solo dd-mm-yyyy
+	    String nuevaFechaEnvase = dateFormat.format(fechaEnvase);
+	    String nuevaFechaCaducidad = dateFormat.format(getCaducidad()); // Formateo de caducidad
+
+
+		return "------ Información del Producto ------"+
+				"\nNombre: " + getNombre() +    //Uso los getter para obtener los datos
 		        "\nPrecio: " + getPrecio() +
-		        "\nFecha de Caducidad: " +getCaducidad() +
+		        "\nFecha de Caducidad: " +nuevaFechaCaducidad +
 		        "\nEstado: " + getEstado() +
 		        "\nPerecedero: " + (isPerecedero() ? "Sí" : "No") + //Uso un el operador ? para que si es true ponga si y si es false ponga no
 		        "\nCalorías: " + getCalorias() +
 		        "\nVegano: " + (isVegano() ? "Sí" : "No") +
-		        "\nFecha de Envase: " + getFecha_envase();
+		        "\nFecha de Envase: " + nuevaFechaEnvase+
+		        "\n------------------------------------";
 
+	}
+	
+	@Override
+	public  void modificarAtributosEspecificos(Scanner scanner) {
+		   System.out.print("¿Es perecedero? (true/false): ");
+	        this.perecedero = scanner.nextBoolean();
+
+	        System.out.print("Ingrese calorías: ");
+	        this.calorias = scanner.nextFloat();
+
+	        System.out.print("¿Es vegano? (true/false): ");
+	        this.vegano = scanner.nextBoolean();
+
+	        System.out.println("Atributos específicos de comida modificados.");
+	    
 	}
 
     

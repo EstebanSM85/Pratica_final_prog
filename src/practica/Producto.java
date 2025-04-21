@@ -1,5 +1,6 @@
 package practica;
 
+import java.util.Scanner;
 import java.util.Date;
 public abstract class Producto {
 	//Atributos 
@@ -11,7 +12,7 @@ public abstract class Producto {
     //Constructor
     public Producto(String nombre, double precio, Date caducidad, String estado) {
     	this.nombre=nombre;
-    	this.precio=precio;
+    	this.precio=precio;    	
     	this.caducidad=caducidad;
     	this.estado=estado;
     }
@@ -54,5 +55,8 @@ public abstract class Producto {
 	public abstract Date obtener_caducidad(); 
 	
 	public abstract String detalle_producto();
+	
+	public abstract void modificarAtributosEspecificos(Scanner scanner);
+
 
 }

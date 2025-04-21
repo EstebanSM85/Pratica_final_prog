@@ -16,21 +16,21 @@ public class GestionProducto {
     public void agregarProducto(Producto producto) {
         if (producto != null) { //si producto esta correcto lo añado a la lista 'producto'
             productos.add(producto);
-            System.out.println("Producto agregado: " + producto.getNombre()); //Mensaje de confirmación
+            System.out.println("\nProducto agregado: " + producto.getNombre()); //Mensaje de confirmación
         } else {
-            System.out.println("El producto no es válido."); //Mensaje de error
+            System.err.println("\nEl producto no es válido."); //Mensaje de error
         }
     }
 
     // Método para listar todos los productos
     public void listarProductos() {
         if (productos.isEmpty()) {
-            System.out.println("No hay productos registrados.");
+            System.err.println("\nNo hay productos registrados.");
         } else {
-            System.out.println("Lista de productos:"); //Muestro la lista de los productos
+            System.out.println("\nLista de productos:"); //Muestro la lista de los productos
             for (Producto producto : productos) { // Recorro la lista
                 System.out.println(producto.detalle_producto()); // Imprimo los detalles de cada uno 
-                System.out.println(" "); // dejo espacio entre cada uno para que se vean
+                System.out.println(); // dejo espacio entre cada uno para que se vean
             }
         }
     }
@@ -42,7 +42,7 @@ public class GestionProducto {
                 return producto;
             }
         }
-        System.out.println("Producto no disponible"); // Mensaje si no lo encuentra
+        System.err.println("\nProducto no disponible"); // Mensaje si no lo encuentra
         return null; // Si no se encuentra el producto
     }
 
@@ -51,10 +51,10 @@ public class GestionProducto {
         Producto EliminarProducto = buscarProducto(nombre); //uso el método buscarProducto para buscarlo y asignarlo a la variable
         if (EliminarProducto != null) { //si la variable no esta vacia lo elimino
             productos.remove(EliminarProducto); // Con .remove borro un objetode la lista(el asignado como eliminarProducto)
-            System.out.println("Producto eliminado: " + nombre); //Mensaje de confirmación
+            System.out.println("\nProducto eliminado: " + nombre); //Mensaje de confirmación
             return true;
         } else {
-            System.out.println("Producto no encontrado: " + nombre);// Mensaje de error
+            System.err.println("\nProducto no encontrado: " + nombre);// Mensaje de error
             return false;
         }
     }

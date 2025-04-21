@@ -1,21 +1,26 @@
 package practica;
 
 import java.util.Date;
+import java.util.Scanner;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 public class Bebida extends Producto {
 
 	//Atributos propios de la clase bebida
 	private boolean gaseoso;
 	private int medida;
 	private boolean lacteo;
-	private Date fechaEnvase;
+	private Date fechaEnvaseBebida;
 		
 	//contructor propio de la clase Bebida
-	public Bebida(String nombre, double precio, Date caducidad, String estado, boolean gaseoso, int medida, boolean lacteo, Date FechaEnvase) {
+	public Bebida(String nombre, double precio, Date caducidad, String estado, boolean gaseoso, int medida, boolean lacteo, Date fechaEnvaseBebida) {
 		super(nombre, precio, caducidad, estado); // Uso el constructor Abstract
 	    this.gaseoso = gaseoso;
 	    this.medida = medida;
 	    this.lacteo = lacteo;
+	    this.fechaEnvaseBebida = fechaEnvaseBebida;
+	    this.setCaducidad(obtener_caducidad()); // Calculamos y asignamos la caducidad automáticamente
 	}
 	
 	
@@ -47,18 +52,18 @@ public class Bebida extends Producto {
 	}
 	
 	public Date getFechaEnvase() {
-		return fechaEnvase;
+		return fechaEnvaseBebida;
 	}
 
 	public void setFechaEnvase(Date fecha_envase) {
-		this.fechaEnvase = fecha_envase;
+		this.fechaEnvaseBebida = fecha_envase;
 	}
 
 
 	@Override
 	public Date obtener_caducidad() {
 		Calendar tiempo = Calendar.getInstance(); //Instancio la clase Calendar para usarla
-        tiempo.setTime(fechaEnvase); // Introduzco la fecha de envasasado
+        tiempo.setTime(fechaEnvaseBebida); // Introduzco la fecha de envasasado
 		  if (lacteo) { // Si lacteo es true, devuelve la fecha de caducidad introducidad más 10 días 
 	            tiempo.add(Calendar.DAY_OF_YEAR, 10); // Sumo los 10 días
 	            return tiempo.getTime();// Devuelve la nueva fecha de caducidad como Date
@@ -72,14 +77,35 @@ public class Bebida extends Producto {
 
 	@Override
 	public String detalle_producto() {
-		return "Nombre: " + getNombre() +    //Uso los getter para obtener los datos
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); //Se formatea la fecha para mostrar solo dd-mm-yyyy
+	    String nuevaFechaEnvase = dateFormat.format(fechaEnvaseBebida);
+	    String nuevaFechaCaducidad = dateFormat.format(getCaducidad()); // Formateo de caducidad
+	    
+		return "------ Información del Producto ------"+
+				"Nombre: " + getNombre() +    //Uso los getter para obtener los datos
 		        "\nPrecio: " + getPrecio() +
-		        "\nFecha de Caducidad: " +getCaducidad() +
+		        "\nFecha de Caducidad: " +nuevaFechaCaducidad +
 		        "\nEstado: " + getEstado() +
-		        "\nPerecedero: " + (isGaseoso() ? "Sí" : "No") + //Uso un el operador ? para que si es true ponga si y si es false ponga no
-		        "\nCalorías: " + getMedida() +
-		        "\nVegano: " + (isLacteo() ? "Sí" : "No") +
-		        "\nFecha de Envase: " + getFechaEnvase();
+		        "\nGaseoso: " + (isGaseoso() ? "Sí" : "No") + //Uso un el operador ? para que si es true ponga si y si es false ponga no
+		        "\nMedida: " + getMedida() +
+		        "\nLacteo: " + (isLacteo() ? "Sí" : "No") +
+		        "\nFecha de Envase: " + nuevaFechaEnvase+
+				"\n------------------------------------";
 	}
+	
+	@Override
+    public void modificarAtributosEspecificos(Scanner scanner) {
+        System.out.print("¿Es gaseoso? (true/false): ");
+        this.gaseoso = scanner.nextBoolean();
+
+        System.out.print("Ingrese medida (ml): ");
+        this.medida = scanner.nextInt();
+
+        System.out.print("¿Es lácteo? (true/false): ");
+        this.lacteo = scanner.nextBoolean();
+
+        System.out.println("Atributos específicos de bebida modificados.");
+    }
+
 	
 }
