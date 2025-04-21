@@ -26,7 +26,7 @@ public class GestionCliente {
 	// Método para listar todos los clientes
 	public void listarClientes() {
 		if (clientes.isEmpty()) {  //Muestro todos los clientes, si no hay saco el mensaje.
-	        System.out.println("No hay clientes registrados.");
+	        System.err.println("No hay clientes registrados.");//mensaje de error
 	    } else {
 	    	for (Cliente cliente : clientes) { //uso el for each  porque queda mas limpio 
 	             System.out.println(cliente.mostrar());//Muestro cada cliente y pongo una separaración para que se vea mas claro
@@ -41,8 +41,20 @@ public class GestionCliente {
 	         if (cliente.getCodigo()==codigo) { // cuando el codigo proporcionado coincide, devuelve cliente
 	             return cliente;
 	         }
-	     }	System.out.println("Cliente no encontrado"); // Mensaje si no lo encuentra
-	     	return null; // Devuelvo null
+	     }	System.err.println("Cliente no encontrado"); // Mensaje si no lo encuentra
+	     	return null; 
 	 }
+	
+	public boolean eliminarCliente(int codigo) {
+        Cliente eliminarCliente = buscarCliente(codigo); //uso el método buscarProducto para buscarlo y asignarlo a la variable
+        if (eliminarCliente != null) { //si la variable no esta vacia lo elimino
+            clientes.remove(eliminarCliente); // Con .remove borro un objetode la lista(el asignado como eliminarProducto)
+            System.out.println("Cliente eliminado: " + codigo); //Mensaje de confirmación
+            return true;
+        } else {
+            System.err.println("No se ha eliminado!");// Mensaje de error
+            return false;
+        }
+    }
 	
 }

@@ -1,5 +1,6 @@
 package practica;
 
+import java.util.Date;
 import java.util.Scanner;
 
 public class Menu {
@@ -20,12 +21,74 @@ public class Menu {
             System.out.println("4. Realizar Pago");
             System.out.println("5. Salir");
             System.out.print("Seleccione una opción: ");
+            System.out.println();
             opcion = scanner.nextInt();
 
             switch (opcion) {
                 case 1:
-                    // Aquí irían las opciones para gestionar clientes
-                    System.out.println("Gestión de Clientes...");
+                    int opcionClientes;
+                    do {
+                    	System.out.println();
+                        System.out.println("=== Gestión de Clientes ===");
+                        System.out.println("1. Agregar Cliente");
+                        System.out.println("2. Listar Clientes");
+                        System.out.println("3. Buscar Cliente");
+                        System.out.println("4. Borrar Cliente");
+                        System.out.println("5. Regresar al Menú Principal");
+                        System.out.print("Seleccione una opción: ");
+                        opcionClientes = scanner.nextInt();
+
+                        switch (opcionClientes) {
+                            case 1:
+                            	System.out.println();
+                                System.out.print("Ingrese nombre: ");
+                                String nombre = scanner.next();
+                                System.out.print("Ingrese apellidos: ");
+                                String apellidos = scanner.next();
+                                System.out.print("Ingrese teléfono: ");
+                                String telefono = scanner.next();
+                                System.out.print("Ingrese dirección: ");
+                                String direccion = scanner.next();
+                                Cliente cliente = new Cliente(nombre, apellidos, telefono, direccion, new Date(), "");
+                                gestionClientes.agregarCliente(cliente);
+                                break;
+
+                            case 2:
+                            	System.out.println();
+                                gestionClientes.listarClientes();
+                                break;
+
+                            case 3:
+                            	System.out.println();
+                                System.out.print("Ingrese el código del cliente a buscar: ");
+                                int codigo = scanner.nextInt();
+                                Cliente encontrado = gestionClientes.buscarCliente(codigo);
+                                if (encontrado != null) {
+                                    System.out.println(encontrado.mostrar());
+                                }
+                                break;
+                                
+                            case 4: // Se usa el método eliminarCliente para eliminar un cliente de la lista
+                            	System.out.println();
+                                System.out.print("Ingrese el código del cliente a borrar: ");
+                                int codigoABorrar = scanner.nextInt(); // Se recoge el código proporcionado por el usuario
+                                boolean resultado = gestionClientes.eliminarCliente(codigoABorrar); // Se llama al método eliminarCliente
+                                if (resultado) { 
+                                    System.out.println("El cliente ha sido eliminado exitosamente."); // Mensaje de éxito
+                                } else {
+                                    System.out.println(" "); //No muestro mensaje de error ya que los métodos llamados ya lo hacen
+                                }
+                                break;
+
+                            case 5:
+                            	System.out.println();
+                                System.out.println("Regresando al Menú Principal...");
+                                break;
+
+                            default:
+                                System.out.println("Opción no válida.");
+                        }
+                    } while (opcionClientes != 5);
                     break;
 
                 case 2:

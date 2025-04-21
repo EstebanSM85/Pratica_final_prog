@@ -19,12 +19,20 @@ public class Cliente {
 	public Cliente(String nombre, String apellidos,String telefono, String direccion,Date fechaAlta, String historial){
 		this.nombre=nombre;
 		this.apellidos=apellidos;
-		this.telefono=telefono;
 		this.direccion=direccion;
 		this.fechaAlta = new Date(); //Asigno la fecha actual como fecha de alta
 		this.historial ="";
 		this.codigo = contadorCodigo;  //Aqui le asigno un codigo único al crear el cliente
         contadorCodigo++;				// Me aseguro que sume uno cada vez que se cree uno
+        
+     	// Se comprueba el numero de telegono que sea correcto
+        if (telefono.matches("[6789]\\d{8}")) { // El número debe empezar con 6, 7, 8, o 9 y tener 9 dígitos
+            this.telefono = telefono;
+        } else {
+            System.err.println("El número de teléfono no es válido. Se asignará 'Desconocido'.");
+            this.telefono = "Desconocido"; // Se le asigna esto para que no ponga null, en caso de no tener
+        }
+
 
 	}
 	
@@ -90,13 +98,16 @@ public class Cliente {
 	}
 	
 	public String mostrar()	{ // Motramos los datos del cliente usando los getter
-		return "Nombre: "+ getNombre()+
+		return  "------ Información del Cliente ------"+
+				"\nNombre: "+ getNombre()+
 				"\nApellidos: "+getApellidos()+
 				"\nTeléfono: "+getTelefono()+
 				"\nFecha de alta: "+getFechaAlta()+
 				"\nDirección: "+getDireccion()+
 				"\nHistorial: "+getHistorial()+
-				"\nCodigo: "+ getCodigo();
+				"\nCodigo: "+ getCodigo()+
+				"\n------------------------------------";
+
 	}
 	
 }
