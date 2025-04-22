@@ -59,9 +59,9 @@ public class Bebida extends Producto {
 		this.fechaEnvaseBebida = fecha_envase;
 	}
 
-
+	//Métodos
 	@Override
-	public Date obtener_caducidad() {
+	public Date obtener_caducidad() { //Método para como dice obtener la fecha de caducidad según la opción que se elija
 		Calendar tiempo = Calendar.getInstance(); //Instancio la clase Calendar para usarla
         tiempo.setTime(fechaEnvaseBebida); // Introduzco la fecha de envasasado
 		  if (lacteo) { // Si lacteo es true, devuelve la fecha de caducidad introducidad más 10 días 
@@ -76,7 +76,7 @@ public class Bebida extends Producto {
 	}
 
 	@Override
-	public String detalle_producto() {
+	public String detalle_producto() { // Método que muestra los detalles de los productos
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); //Se formatea la fecha para mostrar solo dd-mm-yyyy
 	    String nuevaFechaEnvase = dateFormat.format(fechaEnvaseBebida);
 	    String nuevaFechaCaducidad = dateFormat.format(getCaducidad()); // Formateo de caducidad
@@ -94,15 +94,20 @@ public class Bebida extends Producto {
 	}
 	
 	@Override
-    public void modificarAtributosEspecificos(Scanner scanner) {
+    public void modificarAtributosEspecificos(Scanner scanner) throws java.util.InputMismatchException{ 
+		/* Método que usamos para modificar los atributos propios de esta clase
+		Uso el throws porque el que captura la exception es el método que lo llama.*/
         System.out.print("¿Es gaseoso? (true/false): ");
-        this.gaseoso = scanner.nextBoolean();
+        this.gaseoso = scanner.nextBoolean(); //volvemos a elegir la opción que consideremos
 
         System.out.print("Ingrese medida (ml): ");
         this.medida = scanner.nextInt();
 
         System.out.print("¿Es lácteo? (true/false): ");
         this.lacteo = scanner.nextBoolean();
+        
+        this.setCaducidad(obtener_caducidad()); // recalcula la fecha en base a los nuevos parámetros
+
 
         System.out.println("Atributos específicos de bebida modificados.");
     }

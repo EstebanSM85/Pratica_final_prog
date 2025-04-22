@@ -41,7 +41,7 @@ public class Menu {
                         opcionClientes = scanner.next();
 
                         switch (opcionClientes) {
-                            case "1":
+                            case "1": //Se agrega un nuevo cliente
                             	System.out.println();
                                 System.out.print("Ingrese nombre: ");
                                 String nombre = scanner.next();
@@ -55,18 +55,20 @@ public class Menu {
                                 gestionClientes.agregarCliente(cliente);
                                 break;
 
-                            case "2":
+                            case "2": //Se muestra una lista de los clientes guardados usando el método .listarClientes
                             	System.out.println();
                                 gestionClientes.listarClientes();
                                 break;
 
-                            case "3":
+                            case "3": // Se busca un cliente con el codigo único proporcionado al darle de alta
                             	System.out.println();
                                 System.out.print("Ingrese el código del cliente a buscar: ");
                                 int codigo = scanner.nextInt();
-                                Cliente encontrado = gestionClientes.buscarCliente(codigo);
+                                Cliente encontrado = gestionClientes.buscarCliente(codigo); //usamos el método buscarCliente para buscarlo
                                 if (encontrado != null) {
-                                    System.out.println(encontrado.mostrar());
+                                    System.out.println(encontrado.mostrar());//usamos el método mostrar para mostrarlo
+                                }else {
+                                    System.err.println("Cliente no encontrado con el código proporcionado."); //Mensaje de error si no lo encuentra
                                 }
                                 break;
                                 
@@ -109,40 +111,40 @@ public class Menu {
                                         opcionModificar = scanner.next();
 
                                         switch (opcionModificar) {
-                                            case "1": // Modificar nombre (case 1,2,3,4 y 6 funcionan igual solo cpongo comentario en el primero
-                                                System.out.println();
-                                            	System.out.print("Ingrese el nuevo nombre: ");
+                                            case "1": // Modificar nombre (case 1,2,3,4 y 6 funcionan igual solo pongo comentario en el primero
+                      
+                                            	System.out.print("\nIngrese el nuevo nombre: ");
                                                 String nuevoNombre = scanner.next(); //recoge el nombre que introduzca el usuario
                                                 clienteModificar.setNombre(nuevoNombre);// El setter lo asigna
                                                 System.out.println("Nombre modificado exitosamente."); // Mensaje de exito
                                                 break;
 
                                             case "2": // Modificar apellidos
-                                                System.out.println();
-                                            	System.out.print("Ingrese los nuevos apellidos: ");
+                                               
+                                            	System.out.print("\nIngrese los nuevos apellidos: ");
                                                 String nuevosApellidos = scanner.next();
                                                 clienteModificar.setApellidos(nuevosApellidos);
                                                 System.out.println("Apellidos modificados exitosamente.");
                                                 break;
 
                                             case "3": // Modificar teléfono
-                                                System.out.println();
-                                            	System.out.print("Ingrese el nuevo teléfono: ");
+                                                
+                                            	System.out.print("\nIngrese el nuevo teléfono: ");
                                                 String nuevoTelefono = scanner.next();
                                                 clienteModificar.setTelefono(nuevoTelefono); // Validación en el setter de teléfono
                                                 break;
 
                                             case "4": // Modificar dirección
-                                                System.out.println();
-                                            	System.out.print("Ingrese la nueva dirección: ");
+                                                
+                                            	System.out.print("\nIngrese la nueva dirección: ");
                                                 String nuevaDireccion = scanner.next();
                                                 clienteModificar.setDireccion(nuevaDireccion);
                                                 System.out.println("Dirección modificada exitosamente.");
                                                 break;
 
                                             case "5": // Modificar fecha de alta, este caso es un poco diferente por eso lo detallo
-                                                System.out.println();
-                                            	System.out.print("Ingrese la nueva fecha de alta (dd-MM-yyyy): "); // Mensaje para pedir nueva fecha
+                                                
+                                            	System.out.print("\nIngrese la nueva fecha de alta (dd-MM-yyyy): "); // Mensaje para pedir nueva fecha
                                                 String nuevaFecha = scanner.next(); // Recoge la fecha como String
                                                 try { //Por si lanza la excepción ParseException al hacer el cambio
                                                     clienteModificar.setFechaAlta(nuevaFecha); // Llama al método que puede lanzar ParseException
@@ -152,37 +154,37 @@ public class Menu {
                                                 break;
 
                                             case "6": // Modificar historial
-                                                System.out.println();
-                                            	System.out.print("Ingrese el nuevo historial: ");
+                                                
+                                            	System.out.print("\nIngrese el nuevo historial: ");
                                                 String nuevoHistorial = scanner.next();
                                                 clienteModificar.setHistorial(nuevoHistorial);
                                                 System.out.println("Historial modificado exitosamente.");
                                                 break;
 
                                             case "7": // Regresar
-                                                System.out.println();
-                                            	System.out.println("Regresando al menú de Gestión de Clientes...");
+                                               
+                                            	System.out.println("\nRegresando al menú de Gestión de Clientes...");
                                                 break;
 
                                             default:
-                                            	System.out.println();
-                                                System.err.println("Opción no válida. Intente nuevamente.");
+                                            	
+                                                System.err.println("\nOpción no válida. Intente nuevamente.");
                                         }
                                     } while (!opcionModificar.equals("7")); // El submenú se ejecuta hasta que se elija la opción 7
 
                                 } else {
-                                	System.out.println();
-                                    System.err.println("Cliente no encontrado con el código proporcionado."); // Mensaje de error si no existe el cliente
+                                	
+                                    System.err.println("\nCliente no encontrado con el código proporcionado."); // Mensaje de error si no existe el cliente
                                 }
                                 break;
                             case "6":
-                            	System.out.println();
-                                System.out.println("Regresando al Menú Principal...");
+                            
+                                System.out.println("\nRegresando al Menú Principal...");
                                 break;
 
                             default:
-                            	System.out.println();
-                            	System.err.println("Opción no válida. Intente nuevamente.");
+                            	
+                            	System.err.println("\nOpción no válida. Intente nuevamente.");
                         }
                     } while (!opcionClientes.equals("6"));
                     break;
@@ -214,7 +216,10 @@ public class Menu {
 	
 	                            	switch (tipoProducto) {
 	                            	    case "1": // Comida  
-	                            	    	try {
+	                            	    	try { 
+	                            	    		/*Uso el bloque try para controlar 'InputMismatchException'
+	                            	    		aunque es una excepción que hereda de RuntimeException,
+	                            	    		por lo tanto podria cambiar el codigo para no usarlo*/
 		                            	        System.out.print("\nIngrese nombre: ");
 		                            	        String nombreComida = scanner.next();                          	      
 		                            	        System.out.print("Ingrese precio (0,00): ");
@@ -227,19 +232,20 @@ public class Menu {
 		                            	        boolean vegano = scanner.nextBoolean();
 		                            	        System.out.print("Ingrese estado: ");
 		                            	        String estadoComida = scanner.next();
-		                            	        Date fechaEnvaseComida = new Date(); 
+		                            	        Date fechaEnvaseComida = new Date(); // asigna la fecha actual como  de envase(Se puede modificar para introducirla manual)
 		
 		                            	        Comida comida = new Comida(nombreComida, precioComida, null, estadoComida, perecedero, calorias, vegano, fechaEnvaseComida);
-		                            	        gestionProductos.agregarProducto(comida);
-	                            	    	}catch (java.util.InputMismatchException e) {
+		                            	        //La fecha de caducidad es null porque dentro del constructor se establece segun los valores introducidos
+		                            	        gestionProductos.agregarProducto(comida); // se usa el método para agregar el producto
+	                            	    	}catch (java.util.InputMismatchException e) { // aqui capturo la excepción y muestro el mensaje
 	                            	            System.err.println("Debe ingresar un valor válido!\nNúmeros si contiene decimales  separalo con ','\nEn caso de true o false, escribalo correctamente."); // Mensaje de error
-	                            	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+	                            	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada si no a veces hace cosas 'raras'
 	                            	        }
 	
 		                            	    break;
 	
 	                            	    case "2": // Bebida
-	                            	    	try {
+	                            	    	try { //Copia casi exacta del case 1 variando los atributos para Bebida, por eso no comento más
 		                            	        System.out.print("\nIngrese nombre: ");
 		                            	        String nombreBebida = scanner.next();
 		                            	        System.out.print("Ingrese precio (0,00): ");
@@ -273,36 +279,38 @@ public class Menu {
 
 
                             case "2": // Listar Productos
-                                gestionProductos.listarProductos();
+                                gestionProductos.listarProductos();// se muestran los productos que tenemos guardados
                                 break;
 
                             case "3": // Buscar Producto
                                 System.out.print("\nIngrese el nombre del producto a buscar: ");
-                                String nombreBusqueda = scanner.next();
+                                String nombreBusqueda = scanner.next(); 
+                                //Busca por nombre, esto me parece mejor hacerlo por codigo tambien, pero por variarlo un poco con respecto a cliente
                                 Producto productoEncontrado = gestionProductos.buscarProducto(nombreBusqueda);
                                 if (productoEncontrado != null) {
                                     System.out.println("\nProducto encontrado:");
                                     System.out.println(productoEncontrado.detalle_producto());
-                                }
+                                }//No pongo mensaje de error porque dentro del método si no lo encuentra ya nos lo devuelve
                                 break;
 
                             case "4": // Eliminar Producto
                                 System.out.print("\nIngrese el nombre del producto a eliminar: ");
                                 String nombreEliminar = scanner.next();
+                                // busca por nombre,dentro del método usam el método buscar, si lo encuentra lo elimina
                                 gestionProductos.eliminarProducto(nombreEliminar);
                                 break;
 
                             case "5": // Modificar Producto
                                 System.out.print("\nIngrese el nombre del producto a modificar: ");
                                 String nombreModificar = scanner.next();
-                                Producto productoModificar = gestionProductos.buscarProducto(nombreModificar);
+                                Producto productoModificar = gestionProductos.buscarProducto(nombreModificar);// primero busca el producto
 
                                 if (productoModificar != null) {
                                     System.out.println("\nProducto encontrado:");
-                                    System.out.println(productoModificar.detalle_producto());
+                                    System.out.println(productoModificar.detalle_producto());//Lo muestra para ver los detalles a modificar
 
                                     String opcionModificarProducto;
-                                    do {
+                                    do { //Submenú con las opciones
                                         System.out.println("\n=== Modificar Producto ===");
                                         System.out.println("1. Modificar Nombre");
                                         System.out.println("2. Modificar Precio");
@@ -313,11 +321,11 @@ public class Menu {
                                         opcionModificarProducto = scanner.next();
 
                                         switch (opcionModificarProducto) {
-                                            case "1": // Modificar nombre
+                                            case "1": // Modificar nombre, case 1,2,3 son los mismos para las 2 clases, funcionan igual
                                                 System.out.print("\nIngrese el nuevo nombre: ");
-                                                String nuevoNombre = scanner.next();
-                                                productoModificar.setNombre(nuevoNombre);
-                                                System.out.println("Nombre modificado exitosamente.");
+                                                String nuevoNombre = scanner.next(); //recoje la entrada del usuario
+                                                productoModificar.setNombre(nuevoNombre); //Asigna el nombre
+                                                System.out.println("Nombre modificado exitosamente."); // Mensaje de confirmación
                                                 break;
 
                                             case "2": // Modificar precio
@@ -334,8 +342,13 @@ public class Menu {
                                                 System.out.println("Estado modificado exitosamente.");
                                                 break;
                                             
-                                            case "4":
+                                            case "4"://Modifica los atributos especificos, usando el método abstracto que esta en cada una de las clases 
+                                            	try { //Como puede lanzar la excepción InputMismatchException la captura(se podria hacer para no usarlo)
                                                 productoModificar.modificarAtributosEspecificos(scanner);
+                                            }catch (java.util.InputMismatchException e) {
+	                            	            System.err.println("Opción no válida. Intente nuevamente."); // Mensaje de error
+	                            	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+	                            	        }
                                                 break;
 
 
@@ -343,7 +356,7 @@ public class Menu {
                                                 System.out.println("\nRegresando...");
                                                 break;
 
-                                            default:
+                                            default: // si no pulsas la opción correspondiente
                                             	System.err.println("Opción no válida. Intente nuevamente.");
                                         }
                                     } while (!opcionModificarProducto.equals("5"));

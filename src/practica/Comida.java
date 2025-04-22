@@ -20,9 +20,9 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
         this.vegano = vegano;
         this.fechaEnvase = fechaEnvase;
         this.setCaducidad(obtener_caducidad()); // Calculamos y asignamos la caducidad automáticamente
-
     } 
     
+   //setter y getter
     public boolean isPerecedero() { 
 		return perecedero;
 	}
@@ -56,7 +56,7 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
 	}
 
 	@Override
-    public Date obtener_caducidad() {
+    public Date obtener_caducidad() {//Método para como dice obtener la fecha de caducidad según la opción que se elija
         if (perecedero) { // Si perecedero es true, devuelve la fecha de caducidad introducidad más 10 días 
             Calendar tiempo = Calendar.getInstance(); //Instancio la clase Calendar para usarla
             tiempo.setTime(fechaEnvase); // Introduzco la fecha de envasasado
@@ -70,7 +70,7 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
     }
 
 	@Override
-	public String detalle_producto() {
+	public String detalle_producto() {// Método que muestra los detalles de los productos
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); //Se formatea la fecha para mostrar solo dd-mm-yyyy
 	    String nuevaFechaEnvase = dateFormat.format(fechaEnvase);
 	    String nuevaFechaCaducidad = dateFormat.format(getCaducidad()); // Formateo de caducidad
@@ -90,15 +90,19 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
 	}
 	
 	@Override
-	public  void modificarAtributosEspecificos(Scanner scanner) {
+	public  void modificarAtributosEspecificos(Scanner scanner)throws java.util.InputMismatchException {
+		/* Método que usamos para modificar los atributos propios de esta clase
+		 * Uso el throws porque el que captura la exception es el método que lo llama.*/
 		   System.out.print("¿Es perecedero? (true/false): ");
-	        this.perecedero = scanner.nextBoolean();
+	        this.perecedero = scanner.nextBoolean();//volvemos a elegir la opción que consideremos
 
 	        System.out.print("Ingrese calorías: ");
 	        this.calorias = scanner.nextFloat();
 
 	        System.out.print("¿Es vegano? (true/false): ");
 	        this.vegano = scanner.nextBoolean();
+	        
+	        this.setCaducidad(obtener_caducidad()); // recalcula la fecha en base a los nuevos parámetros
 
 	        System.out.println("Atributos específicos de comida modificados.");
 	    
