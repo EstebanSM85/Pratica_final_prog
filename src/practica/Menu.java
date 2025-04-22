@@ -1,7 +1,14 @@
 package practica;
+/*Se podria mejorar en varios aspectos, como po  ejemplo, hay algunos try que se podria mejorar el coigo y quitarlos,
+ * se podría hacer que en los pedidos en vez de cambiar todos los productos puedas quitarlos o añadirlos individualmente,
+ * que cuando añadas productos puedas seleccionar una cantidad de los mismos en vez de de uno en uno
+ * todo esto es más falta de tiempo que ideas*/
+
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -377,8 +384,206 @@ public class Menu {
                     break;
 
                 case "3":
-                    // Aquí irían las opciones para gestionar pedidos
-                    System.out.println("Gestión de Pedidos...");
+                	String opcionPedidos;
+                	do { // Submenú para gestionar los pedidos
+                        System.out.println();
+                        System.out.println("=== Gestión de Pedidos ===");
+                        System.out.println("1. Agregar Pedido");
+                        System.out.println("2. Listar Pedidos");
+                        System.out.println("3. Buscar Pedido");
+                        System.out.println("4. Eliminar Pedido");
+                        System.out.println("5. Modificar Pedido");
+                        System.out.println("6. Regresar al Menú Principal");
+                        System.out.print("Seleccione una opción: ");
+                        opcionPedidos = scanner.next();
+                        switch (opcionPedidos) {
+                        case "1": // Agregar un nuevo pedido
+                           
+                            System.out.print("\nIngrese el código del cliente para el pedido: ");
+                            int codigoCliente = scanner.nextInt();
+                            Cliente clientePedido = gestionClientes.buscarCliente(codigoCliente); // Busca al cliente y lo asigna a clientePedido
+
+                            if (clientePedido != null) { //si no esta vacio cream una lista de Producto
+                                List<Producto> productosPedido = new ArrayList<>(); // Instancia la lista y la llama productosPedido
+                                String agregarProductos;
+                                do {
+                                    System.out.println("Ingrese el nombre del producto para añadir al pedido: ");
+                                    String nombreProducto = scanner.next(); //recoge la entrada del usuario
+                                    Producto productoPedido = gestionProductos.buscarProducto(nombreProducto); //Busca la opción
+                                    // si no lo encuentra el método buscar lanzara un mensaje de error
+
+                                    if (productoPedido != null) { //Si la variable tiene un valor, lo añade
+                                        productosPedido.add(productoPedido);
+                                        System.out.println("Producto añadido al pedido.");//Mensaje de confirmación
+                                    }//No pongo mensaje de error ya que el método buscar si no encuentra ya muestra uno
+
+                                    System.out.print("¿Desea agregar otro producto? (sí/no): ");
+                                    agregarProductos = scanner.next();//recoje la entrada
+                                    do { //Esto no es necesario, pero no me gusta que si no pongo si o sí lo termine, asi me aseguro que pongas si o no
+                                        System.out.print("¿Desea agregar otro producto? (sí/no): ");
+                                        agregarProductos = scanner.next(); 
+                                        if (!agregarProductos.equalsIgnoreCase("si") &&//hace la validación si no es "si,sí o no"
+                                            !agregarProductos.equalsIgnoreCase("sí") &&
+                                            !agregarProductos.equalsIgnoreCase("no")) {
+                                            System.err.println("Entrada no válida. Por favor, ingrese 'sí' o 'no'."); // Mensaje en caso de entrada inválida
+                                        }
+                                    } while (!agregarProductos.equalsIgnoreCase("si") && 
+                                             !agregarProductos.equalsIgnoreCase("sí") &&
+                                             !agregarProductos.equalsIgnoreCase("no")); // Repite hasta recibir una entrada válida
+
+
+                                } while (agregarProductos.equalsIgnoreCase("si")||agregarProductos.equalsIgnoreCase("sí"));//Repite mientras sea si o sí  
+
+                                Pedido nuevoPedido = new Pedido(clientePedido, productosPedido, new Date()); //Instancia un nuevo pedido
+                                gestionPedidos.agregarPedido(nuevoPedido);//Agrega el pedido a la lista 
+                            } else {
+                                System.err.println("No se puede crear el pedido.");//Mensaje de error si no encuentra al cliente
+                            }
+                            break;
+                            
+                        case "2": // Listar todos los pedidos
+                            System.out.println();
+                            gestionPedidos.listarPedidos();//usa el método para listar los pedidos
+                            break;
+                            
+                        case "3": // Buscar un pedido por código
+                            
+                            System.out.print("\nIngrese el código del pedido a buscar: ");
+                            int codigoPedido = scanner.nextInt();
+                            Pedido pedidoEncontrado = gestionPedidos.buscarPedido(codigoPedido);
+                            // Busca el pedido utilizando el método buscarPedido de la clase gestionPedidos
+                            
+                            if (pedidoEncontrado != null) {// Si el pedido es encontrado
+                                System.out.println(pedidoEncontrado.mostrarPedido()); //Lo muestra
+                            } else {
+                                System.err.println("Pedido no encontrado con el código proporcionado.");//Mensaje de error
+                            }
+                            break;
+                            
+                        case "4": // Eliminar un pedido por código
+                            
+                            System.out.print("\nIngrese el código del pedido a eliminar: ");
+                            int codigoEliminar = scanner.nextInt();
+                            boolean resultadoEliminar = gestionPedidos.eliminarPedido(codigoEliminar);
+                            /* Llama al método eliminarPedido de la clase GestionPedidos,
+                            dentro usa el método buscar y lo elimina si lo encuentra*/
+                            
+
+                            if (resultadoEliminar) {//Si es true
+                                System.out.println("Pedido eliminado exitosamente.");//Mensaje de confirmación
+                            } else {
+                                System.err.println("No se pudo eliminar el pedido.");//Si es false mensaje de error
+                            }
+                            break;
+                            
+                            
+                        case "5": // Modificar un pedido
+                            
+                            System.out.print("\nIngrese el código del pedido a modificar: ");//Pide al usuario el código del pedido que desea modificar
+                            int codigoModificarPedido = scanner.nextInt();
+                            Pedido pedidoModificar = gestionPedidos.buscarPedido(codigoModificarPedido);
+                            // Busca el pedido en la lista utilizando el método buscarPedido de la clase gestionPedidos
+                            
+
+                            if (pedidoModificar != null) {// Si lo encuentra
+
+                                System.out.println("\nPedido encontrado:");
+                                System.out.println(pedidoModificar.mostrarPedido());//Lo muestra
+
+                                String opcionModificarPedido;
+                                do {/// Muestra el submenú de opciones para modificar un pedido
+                                    System.out.println("\n=== Modificar Pedido ===");
+                                    System.out.println("1. Modificar Cliente");
+                                    System.out.println("2. Modificar Productos");
+                                    System.out.println("3. Modificar Fecha de Pedido");
+                                    System.out.println("4. Regresar");
+                                    System.out.print("Seleccione una opción: ");
+                                    opcionModificarPedido = scanner.next();
+
+                                    switch (opcionModificarPedido) {
+                                        case "1": // Modificar cliente
+                                            System.out.print("\nIngrese el código del nuevo cliente: ");
+                                            int nuevoCodigoCliente = scanner.nextInt();// Recoge la opcion del usuario
+                                            Cliente nuevoCliente = gestionClientes.buscarCliente(nuevoCodigoCliente);
+
+                                            if (nuevoCliente != null) { // Si lo encuentra
+
+                                                pedidoModificar.setCliente(nuevoCliente); //Asigna la nueva variable
+                                                System.out.println("Cliente modificado exitosamente.");//Mensaje de confirmación
+                                            } else {
+                                                System.err.println("Cliente no encontrado.");//Mensaje de  error
+                                            }
+                                            break;
+
+                                        case "2": // Modificar productos
+                                            List<Producto> nuevosProductos = new ArrayList<>();
+                                            String modificarProductos;
+                                            do {
+                                                System.out.print("Ingrese el nombre del nuevo producto: ");
+                                                String nombreNuevoProducto = scanner.next();
+                                                Producto nuevoProducto = gestionProductos.buscarProducto(nombreNuevoProducto);
+
+                                                if (nuevoProducto != null) {
+                                                    nuevosProductos.add(nuevoProducto);
+                                                    System.out.println("Producto añadido.");
+                                                } else {
+                                                    System.err.println("Producto no encontrado.");
+                                                }
+
+                                                do { //Este do-wile tiene la misma funcion que en case 1 agregar pedido 
+                                                    System.out.print("¿Desea agregar otro producto? (sí/no): ");
+                                                    modificarProductos = scanner.next(); // Captura la respuesta del usuario
+
+                                                    if (!modificarProductos.equalsIgnoreCase("si") && // Valida si la entrada no es "si", "sí" o "no"
+                                                        !modificarProductos.equalsIgnoreCase("sí") &&
+                                                        !modificarProductos.equalsIgnoreCase("no")) {
+                                                        System.err.println("Entrada no válida. Por favor, ingrese 'sí' o 'no'."); // Mensaje de error
+                                                    }
+                                                } while (!modificarProductos.equalsIgnoreCase("si") && // Repite hasta que la entrada sea válida
+                                                         !modificarProductos.equalsIgnoreCase("sí") &&
+                                                         !modificarProductos.equalsIgnoreCase("no"));
+
+                                            } while (modificarProductos.equalsIgnoreCase("si") || modificarProductos.equalsIgnoreCase("sí")); // Continúa si el usuario pulsa 'sí' o 'si'
+
+
+                                            pedidoModificar.setProductos(nuevosProductos);
+                                            System.out.println("Productos modificados exitosamente.");
+                                            break;
+
+                                        case "3": // Modificar fecha de pedido
+                                            System.out.print("\nIngrese la nueva fecha del pedido (dd-MM-yyyy): ");
+                                            String nuevaFechaPedido = scanner.next(); // Captura la fecha ingresada por el usuario como cadena
+
+                                            try { //Por si se mete una fecha invalida
+                                                pedidoModificar.setFechaPedido(nuevaFechaPedido); // Llama al método que puede lanzar ParseException
+                                                System.out.println("Fecha de pedido modificada exitosamente."); 
+                                            } catch (ParseException e) { // Si lanza la excepción la capturamos
+                                                System.err.println("La fecha proporcionada no es válida. Intente nuevamente.");
+                                            }
+                                            break; 
+
+                                        case "4": // Regresar
+                                            System.out.println("\nRegresando al menú de Gestión de Pedidos...");
+                                            break;
+
+                                        default:
+                                            System.err.println("Opción no válida. Intente nuevamente.");
+                                    }
+                                } while (!opcionModificarPedido.equals("4"));
+                            } else {
+                                System.err.println("Pedido no encontrado con el código proporcionado.");
+                            }
+                            break;
+                            
+                        case "6": // Regresar al menú principal
+                            System.out.println("\nRegresando al Menú Principal...");
+                            break;
+                            
+                        default:
+                            System.err.println("\nOpción no válida. Intente nuevamente.");//Mensaje de error si no es correcta la opción
+                    }
+                        
+                        }while (!opcionPedidos.equals("6"));
                     break;
 
                 case "4":

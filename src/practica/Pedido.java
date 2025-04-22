@@ -1,5 +1,6 @@
 package practica;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -45,8 +46,16 @@ public class Pedido {
         return fechaPedido;
     }
 
-    public void setFechaPedido(Date fechaPedido) {
-        this.fechaPedido = (fechaPedido != null) ? fechaPedido : new Date(); //si la fechaPedido esta vacio, asigno la fecha actual
+    public void setFechaPedido(String fechaPedido)throws java.text.ParseException{
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // Formato de la fecha esperada
+        dateFormat.setLenient(false); // Validación estricta para evitar fechas irreales
+        try {
+            Date fecha = dateFormat.parse(fechaPedido); // Intenta convertir la cadena a un objeto Date
+            this.fechaPedido = fecha; // Asigna la fecha si es válida
+            System.out.println("Fecha de pedido establecida correctamente: " + fechaPedido); // Confirmación de éxito
+        } catch (Exception e) {
+            System.err.println("Fecha inválida. No se realizó ningún cambio."); // Mensaje de error en caso de excepción
+        }
     }
 
     // Método para calcular el total del pedido
@@ -60,10 +69,15 @@ public class Pedido {
 
     // Método para mostrar detalles del pedido
     public String mostrarPedido() {
+    	String productosNombres = ""; //Atributo donde voy ha hacer una cadena String con los productos
+        for (Producto producto : productos) { // recorremos los productos
+            productosNombres += "- " + producto.getNombre() + "\n"; // Concatenamos los detalles de cada producto en la lista
+        }
+
         return "Código Pedido: " + codigoPedido +
                "\nCliente: " + cliente.getNombre() + " " + cliente.getApellidos() + //Muestra el nombre y apellidos en la misma linea
                "\nFecha Pedido: " + getFechaPedido() +
-               "\nProductos: " + getProductos() +
+               "\nProductos: " +"\n"+ productosNombres+
                "\nTotal: " + calcularTotal() + "€";
     }
 
