@@ -13,8 +13,8 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
 	private Date fechaEnvase;
 	
 	 // Constructor
-   public Comida(String nombre, double precio, Date caducidad, String estado, boolean perecedero, float calorias, boolean vegano, Date fechaEnvase) {
-        super(nombre, precio, caducidad, estado); // Uso el constructor Abstract con la palabra reservada super
+   public Comida(String nombre, double precio, Date caducidad, boolean perecedero, float calorias, boolean vegano, Date fechaEnvase) {
+        super(nombre, precio, caducidad, "Correcto"); // Uso el constructor Abstract con la palabra reservada super
         this.perecedero = perecedero;
         this.calorias = calorias;
         this.vegano = vegano;

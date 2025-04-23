@@ -1,7 +1,7 @@
 package practica;
-/*Se podria mejorar en varios aspectos, como po  ejemplo, hay algunos try que se podria mejorar el coigo y quitarlos,
+/*Se podria mejorar en varios aspectos, como por ejemplo, hay algunos try que se podría mejorar el codigo y quitarlos,
  * se podría hacer que en los pedidos en vez de cambiar todos los productos puedas quitarlos o añadirlos individualmente,
- * que cuando añadas productos puedas seleccionar una cantidad de los mismos en vez de de uno en uno
+ * que cuando añadas productos puedas seleccionar una cantidad de los mismos en vez de de uno en uno,
  * todo esto es más falta de tiempo que ideas*/
 
 
@@ -35,9 +35,8 @@ public class Menu {
             switch (opcion) {
                 case "1":
                     String opcionClientes;
-                    do { // Submenú para gestionar a los clientes
-                    	System.out.println();
-                        System.out.println("=== Gestión de Clientes ===");
+                    do { // Submenú para gestionar a los clientes                   	
+                        System.out.println("\n=== Gestión de Clientes ===");
                         System.out.println("1. Agregar Cliente");
                         System.out.println("2. Listar Clientes");
                         System.out.println("3. Buscar Cliente");
@@ -236,12 +235,10 @@ public class Menu {
 		                            	        System.out.print("¿Es perecedero? (true/false): ");
 		                            	        boolean perecedero = scanner.nextBoolean();
 		                            	        System.out.print("¿Es vegano? (true/false): ");
-		                            	        boolean vegano = scanner.nextBoolean();
-		                            	        System.out.print("Ingrese estado: ");
-		                            	        String estadoComida = scanner.next();
+		                            	        boolean vegano = scanner.nextBoolean();		                            	        
 		                            	        Date fechaEnvaseComida = new Date(); // asigna la fecha actual como  de envase(Se puede modificar para introducirla manual)
 		
-		                            	        Comida comida = new Comida(nombreComida, precioComida, null, estadoComida, perecedero, calorias, vegano, fechaEnvaseComida);
+		                            	        Comida comida = new Comida(nombreComida, precioComida, null, perecedero, calorias, vegano, fechaEnvaseComida);
 		                            	        //La fecha de caducidad es null porque dentro del constructor se establece segun los valores introducidos
 		                            	        gestionProductos.agregarProducto(comida); // se usa el método para agregar el producto
 	                            	    	}catch (java.util.InputMismatchException e) { // aqui capturo la excepción y muestro el mensaje
@@ -262,12 +259,10 @@ public class Menu {
 		                            	        System.out.print("¿Es gaseoso? (true/false): ");
 		                            	        boolean gaseoso = scanner.nextBoolean();
 		                            	        System.out.print("¿Es lácteo? (true/false): ");
-		                            	        boolean lacteo = scanner.nextBoolean();
-		                            	        System.out.print("Ingrese estado: ");
-		                            	        String estadoBebida = scanner.next();
+		                            	        boolean lacteo = scanner.nextBoolean();		                           	        
 		                            	        Date fechaEnvaseBebida = new Date(); // Puedes personalizar esta fecha
 		
-		                            	        Bebida bebida = new Bebida(nombreBebida, precioBebida, null, estadoBebida, gaseoso, medida, lacteo, fechaEnvaseBebida);
+		                            	        Bebida bebida = new Bebida(nombreBebida, precioBebida, null, gaseoso, medida, lacteo, fechaEnvaseBebida);
 		                            	        gestionProductos.agregarProducto(bebida);
 	                            	    	}catch (java.util.InputMismatchException e) {
 	                            	            System.err.println("Debe ingresar un valor válido!\nNúmeros si contiene decimales  separalo con ','\nEn caso de true o false, escribalo correctamente."); // Mensaje de error
@@ -419,18 +414,14 @@ public class Menu {
 
                                     System.out.print("¿Desea agregar otro producto? (sí/no): ");
                                     agregarProductos = scanner.next();//recoje la entrada
-                                    do { //Esto no es necesario, pero no me gusta que si no pongo si o sí lo termine, asi me aseguro que pongas si o no
+                                    
+                                    while (!agregarProductos.equalsIgnoreCase("si") &&
+                                           !agregarProductos.equalsIgnoreCase("sí") &&
+                                           !agregarProductos.equalsIgnoreCase("no")) {
+                                        System.err.println("Entrada no válida. Por favor, ingrese 'sí' o 'no'.");
                                         System.out.print("¿Desea agregar otro producto? (sí/no): ");
-                                        agregarProductos = scanner.next(); 
-                                        if (!agregarProductos.equalsIgnoreCase("si") &&//hace la validación si no es "si,sí o no"
-                                            !agregarProductos.equalsIgnoreCase("sí") &&
-                                            !agregarProductos.equalsIgnoreCase("no")) {
-                                            System.err.println("Entrada no válida. Por favor, ingrese 'sí' o 'no'."); // Mensaje en caso de entrada inválida
-                                        }
-                                    } while (!agregarProductos.equalsIgnoreCase("si") && 
-                                             !agregarProductos.equalsIgnoreCase("sí") &&
-                                             !agregarProductos.equalsIgnoreCase("no")); // Repite hasta recibir una entrada válida
-
+                                        agregarProductos = scanner.next(); // Recoge la entrada nuevamente solo si es inválida
+                                    }
 
                                 } while (agregarProductos.equalsIgnoreCase("si")||agregarProductos.equalsIgnoreCase("sí"));//Repite mientras sea si o sí  
 
@@ -581,25 +572,113 @@ public class Menu {
                             
                         default:
                             System.err.println("\nOpción no válida. Intente nuevamente.");//Mensaje de error si no es correcta la opción
-                    }
+                        }
                         
-                        }while (!opcionPedidos.equals("6"));
+                    }while (!opcionPedidos.equals("6"));
                     break;
 
-                case "4":
-                    // Aquí iría la lógica para realizar pagos
-                    System.out.println("Realizar Pago...");
+                case "4": // Procesar el pago del pedido
+
+                    // Solicita el código del pedido a pagar
+                    System.out.print("\nIngrese el código del pedido que desea pagar: ");
+                    int codigoPedidoPago = scanner.nextInt(); // Captura el código del pedido
+                    Pedido pedidoPago = gestionPedidos.buscarPedido(codigoPedidoPago); // Busca el pedido por código
+
+                    if (pedidoPago != null) { // Si el pedido existe
+                        System.out.println("\nPedido encontrado:");
+                        System.out.println(pedidoPago.mostrarPedido()); // Muestra los detalles del pedido
+
+                        String opcionPago; // Variable para seleccionar la forma de pago
+                        do {
+                            System.out.println("\n=== Métodos de Pago ===");
+                            System.out.println("1. Tarjeta de Crédito/Débito");
+                            System.out.println("2. Transferencia Bancaria");
+                            System.out.println("3. Pago en Efectivo");
+                            System.out.println("4. Regresar");
+                            System.out.print("Seleccione una opción: ");
+                            opcionPago = scanner.next(); // Captura la opción seleccionada por el usuario
+
+                            switch (opcionPago) {// Pago con tarjeta de crédito/débito
+
+                                case "1": // Tarjeta
+                                    System.out.println("\n--- Pago con Tarjeta ---"); //Se introducen los datos de la tarjeta
+                                    System.out.print("Ingrese el número de la tarjeta(16 dígitos sin espacios): ");
+                                    String numeroTarjeta = scanner.next();
+                                    System.out.print("Ingrese el titular de la tarjeta: ");
+                                    String titular = scanner.next();
+                                    System.out.print("Ingrese la fecha de caducidad (MM/AA): "); //Se verifica dentro del constructor
+                                    String fechaCaducidad = scanner.next();
+                                    System.out.print("Ingrese el código de seguridad: ");
+                                    int codigoSeguridad = scanner.nextInt();
+
+                                    try {
+                                        Tarjeta pagoTarjeta = new Tarjeta(pedidoPago.calcularTotal(), numeroTarjeta, titular, fechaCaducidad, codigoSeguridad);
+                                        if (pagoTarjeta.procesarPago()) {
+                                            System.out.println("El pago con tarjeta se realizó exitosamente.");
+                                        }
+                                    } catch (TarjetaInvalidaException e) {
+                                        System.err.println("Error: " + e.getMessage());
+                                    }
+                                    break;
+
+
+                                case "2": // Transferencia
+                                    System.out.println("\n--- Pago por Transferencia ---"); // Se introducen los datos de las cuentas
+                                    System.out.print("Ingrese la cuenta origen(20 dígitos, sin espacios): ");
+                                    String cuentaOrigen = scanner.next(); // Captura la cuenta de origen
+                                    System.out.print("Ingrese la cuenta destino(20 dígitos, sin espacios): ");
+                                    String cuentaDestino = scanner.next(); // Captura la cuenta de destino
+
+                                    try {
+                                        // Intenta crear el objeto Transferencia
+                                        Transferencia pagoTransferencia = new Transferencia(pedidoPago.calcularTotal(), cuentaOrigen, cuentaDestino);
+
+                                        // Procesa el pago si las cuentas son válidas
+                                        if (pagoTransferencia.procesarPago()) {
+                                            System.out.println("El pago por transferencia se realizó exitosamente."); // Mensaje de confirmación
+                                        } 
+
+                                    } catch (CuentaInvalidaException e) {
+                                        // Captura la excepción lanzada por el constructor y muestra un mensaje de error
+                                        System.err.println("Error al crear la transferencia: " + e.getMessage());
+                                    }
+                                    break;
+
+                                case "3": // Efectivo
+                                    System.out.println("\n--- Pago en Efectivo ---");
+                                    System.out.print("Ingrese la cantidad entregada: ");
+                                    double entrega = scanner.nextDouble();
+
+                                    if (entrega >= pedidoPago.calcularTotal()) { // Verifica que la entrega sea suficiente
+                                        Efectivo pagoEfectivo = new Efectivo(pedidoPago.calcularTotal(), entrega);
+                                        pagoEfectivo.procesarPago(); // Procesa el pago en efectivo y calcula el cambio
+                                    } else {
+                                        System.err.println("La cantidad entregada es insuficiente para realizar el pago.");
+                                    }
+                                    break;
+
+                                case "4": // Regresar
+                                    System.out.println("\nRegresando al menú anterior...");
+                                    break;
+
+                                default:
+                                    System.err.println("Opción no válida. Intente nuevamente.");
+                            }
+                        } while (!opcionPago.equals("4")); // Se repite hasta que el usuario pulse 4
+                    } else { // Si el pedido no existe
+                        System.err.println("Pedido no encontrado con el código proporcionado.");//Mensaje de error
+                    }
                     break;
 
-                case "5":
+                case "5": //Cierra el programa
                     System.out.println("Saliendo del sistema...");
                     break;
 
                 default:
-                	System.err.println("Opción no válida. Intente nuevamente.");
+                	System.err.println("Opción no válida. Intente nuevamente."); //mensaje de error
             }
 
-        } while (!opcion.equals("5"));
+        } while (!opcion.equals("5"));// Se repite hasta que el usuario pulse 5
 
         scanner.close();
     }

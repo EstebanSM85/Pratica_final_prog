@@ -14,8 +14,8 @@ public class Bebida extends Producto {
 	private Date fechaEnvaseBebida;
 		
 	//contructor propio de la clase Bebida
-	public Bebida(String nombre, double precio, Date caducidad, String estado, boolean gaseoso, int medida, boolean lacteo, Date fechaEnvaseBebida) {
-		super(nombre, precio, caducidad, estado); // Uso el constructor Abstract
+	public Bebida(String nombre, double precio, Date caducidad, boolean gaseoso, int medida, boolean lacteo, Date fechaEnvaseBebida) {
+		super(nombre, precio, caducidad, "Correcto"); // Uso el constructor Abstract
 	    this.gaseoso = gaseoso;
 	    this.medida = medida;
 	    this.lacteo = lacteo;

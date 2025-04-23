@@ -1,20 +1,47 @@
 package practica;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Tarjeta extends PasarelaPago {
 	//Atributos propios
     private String numeroTarjeta;
     private String titular;
-    private String fechaExpiracion;
+    private String fechaCaducidad;
     private int codigoSeguridad;
 
     //Constructor
-    public Tarjeta(double importe, String numeroTarjeta, String titular, String fechaExpiracion, int codigoSeguridad) {
+    public Tarjeta(double importe, String numeroTarjeta, String titular, String fechaCaducidad, int codigoSeguridad) {
         super(importe); //uso el constructor de la superclase
+     // Validación del formato del número de tarjeta
+        if (!numeroTarjeta.matches("\\d{16}")) {
+            throw new TarjetaInvalidaException("Formato de número de tarjeta inválido. Debe cumplir con: 1234 5678 9123 4567 o 3782 822463 10005.");
+        }
+        
         this.numeroTarjeta = numeroTarjeta;
         this.titular = titular;
-        this.fechaExpiracion = fechaExpiracion;
         this.codigoSeguridad = codigoSeguridad;
+        
+     
+
+        
+     // Validación de la fecha de caducidad
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/yy");
+            dateFormat.setLenient(false); // Validación estricta
+            Date fechaExpiracionDate = dateFormat.parse(fechaCaducidad); // Convierte la fecha de caducidad a un objeto Date
+            Date fechaActual = new Date(); // Obtiene la fecha actual
+
+            if (fechaExpiracionDate.before(fechaActual)) { // Comprueba si la tarjeta está vencida comparando si es antes de fecha actual
+                throw new TarjetaInvalidaException("La tarjeta está caducada. No se puede guardar la tarjeta."); // Lanza excepción si la tarjeta está caducada
+            }
+            this.fechaCaducidad = fechaCaducidad; // Asigna la fecha si es válida
+        } catch (Exception e) {
+            throw new TarjetaInvalidaException("Formato de fecha de caducidad inválido. No se puede guardar la tarjeta."); // Lanza excepción si el formato es incorrecto
+        }
     }
+
+    
     
     //getter y setter
     public String getNumeroTarjeta() {
@@ -25,8 +52,8 @@ public class Tarjeta extends PasarelaPago {
 		return titular;
 	}
 
-	public String getFechaExpiracion() {
-		return fechaExpiracion;
+	public String getFechaCaducidad() {
+		return fechaCaducidad;
 	}
 
 	public int getCodigoSeguridad() {
@@ -41,8 +68,20 @@ public class Tarjeta extends PasarelaPago {
 		this.titular = titular;
 	}
 
-	public void setFechaExpiracion(String fechaExpiracion) {
-		this.fechaExpiracion = fechaExpiracion;
+	public void setFechaCaducidad(String fechaCaducidad) {
+	    try {
+	        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/yy"); // Formato de mes/año
+	        dateFormat.setLenient(false); // Validación estricta
+	        Date fechaExpiracionDate = dateFormat.parse(fechaCaducidad); // Convierte la fecha a un objeto Date
+	        Date fechaActual = new Date(); // Obtiene la fecha actual
+
+	        if (fechaExpiracionDate.before(fechaActual)) { // Comprueba si la tarjeta está caducada
+	            throw new IllegalArgumentException("La tarjeta está caducada. No se puede asignar la fecha de caducidad.");
+	        }
+	        this.fechaCaducidad = fechaCaducidad; // Asigna la fecha si es válida
+	    } catch (Exception e) {
+	        throw new IllegalArgumentException("Formato de fecha de caducidad inválida. Use el formato MM/yy."); // Manejo de errores
+	    }
 	}
 
 	public void setCodigoSeguridad(int codigoSeguridad) {
@@ -52,16 +91,16 @@ public class Tarjeta extends PasarelaPago {
 	
 	//Métodos para comprobar las tarjetas
 	public boolean validarFormato() { // Verifica si la tarjeta tiene un formato válido
-	       return numeroTarjeta.matches("\\d{4} \\d{6} \\d{5}") || numeroTarjeta.matches("\\d{4} \\d{4} \\d{4} \\d{4}");
+	       return numeroTarjeta.matches("\\d{16}");
 	    }
 	
 	
 	 public String identificarTarjeta() { // Identifico el tipo de tarjeta según el numero
-	        if (numeroTarjeta.startsWith("3") && numeroTarjeta.matches("\\d{4} \\d{6} \\d{5}")) {
+	        if (numeroTarjeta.startsWith("3")) {
 	            return "American Express";
-	        } else if (numeroTarjeta.startsWith("4") && numeroTarjeta.matches("\\d{4} \\d{4} \\d{4} \\d{4}")) {
+	        } else if (numeroTarjeta.startsWith("4")) {
 	            return "VISA";
-	        } else if (numeroTarjeta.startsWith("5") && numeroTarjeta.matches("\\d{4} \\d{4} \\d{4} \\d{4}")) {
+	        } else if (numeroTarjeta.startsWith("5")) {
 	            return "MasterCard";
 	        } else {
 	            return "No válida";
@@ -72,11 +111,6 @@ public class Tarjeta extends PasarelaPago {
 	@Override
     public boolean procesarPago() { //sobreescribo el método de la superclase
         System.out.println("Procesando pago con tarjeta de crédito...");
-        
-        if (!validarFormato()) { //Valido el formato si no es valido imprimo mensaje.
-            System.out.println("Número de tarjeta inválido.");
-            return false;
-        }
      
         String tipoTarjeta = identificarTarjeta(); //identifico el tipo de tarjeta
         if (!tipoTarjeta.equals("No válida")) {
