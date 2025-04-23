@@ -67,9 +67,20 @@ public class Menu {
                                 break;
 
                             case "3": // Se busca un cliente con el codigo único proporcionado al darle de alta
-                            	System.out.println();
-                                System.out.print("Ingrese el código del cliente a buscar: ");
-                                int codigo = scanner.nextInt();
+                            	    boolean entradaValida = false; // Bandera para controlar la validez de la entrada
+                            	    int codigo = 0;
+
+                            	    while (!entradaValida) {
+                            	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
+                            	            System.out.print("\nIngrese el código del cliente a buscar: ");
+                            	            codigo = scanner.nextInt(); // Intenta leer el código como entero
+                            	            entradaValida = true; // Si llega aquí, la entrada es válida
+                            	        } catch (java.util.InputMismatchException e) {
+                            	            System.err.println("Debe ingresar un número válido.");
+                            	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+                            	        }
+                            	    }
+
                                 Cliente encontrado = gestionClientes.buscarCliente(codigo); //usamos el método buscarCliente para buscarlo
                                 if (encontrado != null) {
                                     System.out.println(encontrado.mostrar());//usamos el método mostrar para mostrarlo
@@ -79,9 +90,19 @@ public class Menu {
                                 break;
                                 
                             case "4": // Se usa el método eliminarCliente para eliminar un cliente de la lista
-                            	System.out.println();
-                                System.out.print("Ingrese el código del cliente a borrar: ");
-                                int codigoABorrar = scanner.nextInt(); // Se recoge el código proporcionado por el usuario
+                            	 boolean entradaValidaEliminar = false; // Bandera para controlar la validez de la entrada
+                         	    int codigoABorrar =0;
+
+                         	    while (!entradaValidaEliminar) {
+                         	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
+                         	            System.out.print("\nIngrese el código del cliente a buscar: ");
+                         	            codigoABorrar = scanner.nextInt(); // Intenta leer el código como entero
+                         	            entradaValidaEliminar = true; // Si llega aquí, la entrada es válida
+                         	        } catch (java.util.InputMismatchException e) {
+                         	            System.err.println("Debe ingresar un número válido.");
+                         	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+                         	        }
+                         	    }
                                 boolean resultado = gestionClientes.eliminarCliente(codigoABorrar); // Se llama al método eliminarCliente
                                 if (resultado) { 
                                     System.out.println("El cliente ha sido eliminado exitosamente."); // Mensaje de éxito
@@ -91,10 +112,21 @@ public class Menu {
                                 break;
                                
                             case "5": // Modificar cliente
-                                System.out.println();
-                                System.out.print("Ingrese el código del cliente a modificar: ");
-                                int codigoModificar = scanner.nextInt(); // Recoge el código del cliente
-                                Cliente clienteModificar = gestionClientes.buscarCliente(codigoModificar); // Busca el cliente por su código
+                            	boolean entradaValidaModificar = false; // Bandera para controlar la validez de la entrada
+                         	    int codigoAModificar = 0;
+
+                         	    while (!entradaValidaModificar) {
+                         	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
+                         	            System.out.print("\nIngrese el código del cliente a buscar: ");
+                         	            codigoAModificar = scanner.nextInt(); // Intenta leer el código como entero
+                         	            entradaValidaModificar = true; // Si llega aquí, la entrada es válida
+                         	        } catch (java.util.InputMismatchException e) {
+                         	            System.err.println("Debe ingresar un número válido.");
+                         	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+                         	        }
+                         	    }
+                                // Recoge el código del cliente
+                                Cliente clienteModificar = gestionClientes.buscarCliente(codigoAModificar); // Busca el cliente por su código
 
                                 if (clienteModificar != null) { // Si el cliente existe
                                 	System.out.println();
@@ -438,9 +470,20 @@ public class Menu {
                             break;
                             
                         case "3": // Buscar un pedido por código
-                            
-                            System.out.print("\nIngrese el código del pedido a buscar: ");
-                            int codigoPedido = scanner.nextInt();
+                        	boolean pedidoValido = false; // Bandera para controlar la validez de la entrada
+                     	    int codigoPedido =0;
+
+                     	    while (!pedidoValido) {
+                     	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
+                     	            System.out.print("\nIngrese el código del pedido a buscar: ");
+                     	            codigoPedido = scanner.nextInt(); // Intenta leer el código como entero
+                     	            pedidoValido = true; // Si llega aquí, la entrada es válida
+                     	        } catch (java.util.InputMismatchException e) {
+                     	            System.err.println("Debe ingresar un número válido.");
+                     	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+                     	        }
+                     	    }
+                           
                             Pedido pedidoEncontrado = gestionPedidos.buscarPedido(codigoPedido);
                             // Busca el pedido utilizando el método buscarPedido de la clase gestionPedidos
                             
@@ -452,10 +495,21 @@ public class Menu {
                             break;
                             
                         case "4": // Eliminar un pedido por código
-                            
-                            System.out.print("\nIngrese el código del pedido a eliminar: ");
-                            int codigoEliminar = scanner.nextInt();
-                            boolean resultadoEliminar = gestionPedidos.eliminarPedido(codigoEliminar);
+                        	boolean pedidoValidoEliminar = false; // Bandera para controlar la validez de la entrada
+                     	    int pedidoABorrar =0;
+
+                     	    while (!pedidoValidoEliminar) {
+                     	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
+                     	            System.out.print("\nIngrese el código del pedido a eliminar: ");
+                     	            pedidoABorrar = scanner.nextInt(); // Intenta leer el código como entero
+                     	            pedidoValidoEliminar = true; // Si llega aquí, la entrada es válida
+                     	        } catch (java.util.InputMismatchException e) {
+                     	            System.err.println("Debe ingresar un número válido.");
+                     	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+                     	        }
+                     	    }
+                          
+                            boolean resultadoEliminar = gestionPedidos.eliminarPedido(pedidoABorrar);
                             /* Llama al método eliminarPedido de la clase GestionPedidos,
                             dentro usa el método buscar y lo elimina si lo encuentra*/
                             
@@ -469,10 +523,21 @@ public class Menu {
                             
                             
                         case "5": // Modificar un pedido
+                        	boolean pedidoValidoModificar = false; // Bandera para controlar la validez de la entrada
+                     	    int pedidoAModificar =0;
+
+                     	    while (!pedidoValidoModificar) {
+                     	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
+                     	            System.out.print("\nIngrese el código del pedido a modificar2: ");
+                     	           pedidoAModificar = scanner.nextInt(); // Intenta leer el código como entero
+                     	           pedidoValidoModificar = true; // Si llega aquí, la entrada es válida
+                     	        } catch (java.util.InputMismatchException e) {
+                     	            System.err.println("Debe ingresar un número válido.");
+                     	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+                     	        }
+                     	    }
                             
-                            System.out.print("\nIngrese el código del pedido a modificar: ");//Pide al usuario el código del pedido que desea modificar
-                            int codigoModificarPedido = scanner.nextInt();
-                            Pedido pedidoModificar = gestionPedidos.buscarPedido(codigoModificarPedido);
+                            Pedido pedidoModificar = gestionPedidos.buscarPedido(pedidoAModificar);
                             // Busca el pedido en la lista utilizando el método buscarPedido de la clase gestionPedidos
                             
 
@@ -493,8 +558,20 @@ public class Menu {
 
                                     switch (opcionModificarPedido) {
                                         case "1": // Modificar cliente
-                                            System.out.print("\nIngrese el código del nuevo cliente: ");
-                                            int nuevoCodigoCliente = scanner.nextInt();// Recoge la opcion del usuario
+                                        	boolean cambioClientePedido = false; // Bandera para controlar la validez de la entrada
+                                     	    int nuevoCodigoCliente = 0;
+
+                                     	    while (!cambioClientePedido) {
+                                     	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
+                                     	            System.out.print("\nIngrese el código del cliente a buscar: ");
+                                     	           nuevoCodigoCliente = scanner.nextInt(); // Intenta leer el código como entero
+                                     	          cambioClientePedido = true; // Si llega aquí, la entrada es válida
+                                     	        } catch (java.util.InputMismatchException e) {
+                                     	            System.err.println("Debe ingresar un número válido.");
+                                     	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
+                                     	        }
+                                     	    }
+                                            
                                             Cliente nuevoCliente = gestionClientes.buscarCliente(nuevoCodigoCliente);
 
                                             if (nuevoCliente != null) { // Si lo encuentra
