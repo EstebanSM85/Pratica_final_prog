@@ -3,7 +3,7 @@ package practica;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GestionPedidos {
+public class GestionPedidos implements Imprimir {
     private List<Pedido> pedidos; // Lista para almacenar objetos Pedido en una lista llamada pedidos
 
     public GestionPedidos() {
@@ -51,4 +51,25 @@ public class GestionPedidos {
             return false; // Mensaje de error
         }
     }
+
+	@Override
+	public void imprimir() {
+		if (pedidos.isEmpty()) {
+	       System.out.println("\nNo hay pedidos para imprimir.");
+    } else {
+        System.out.println("\n--- TICKET DE PEDIDOS ---");
+        for (Pedido pedido : pedidos) {
+            System.out.println("Código Pedido: " + pedido.getCodigoPedido());
+            System.out.println("Cliente: " + pedido.getCliente().getNombre() + " " + pedido.getCliente().getApellidos());
+            System.out.println("Fecha Pedido: " + pedido.getFechaPedido());
+            System.out.println("Productos:");
+            for (Producto producto : pedido.getProductos()) {
+                System.out.println("- " + producto.getNombre() + " (Precio: " + producto.getPrecio() + "€)");
+            }
+            System.out.println("Total Pedido: " + pedido.calcularTotal() + "€");
+            System.out.println("-------------------------");
+        }
+    }
+}
+
 }

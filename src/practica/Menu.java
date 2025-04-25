@@ -268,9 +268,9 @@ public class Menu {
 		                            	        boolean perecedero = scanner.nextBoolean();
 		                            	        System.out.print("¿Es vegano? (true/false): ");
 		                            	        boolean vegano = scanner.nextBoolean();		                            	        
-		                            	        Date fechaEnvaseComida = new Date(); // asigna la fecha actual como  de envase(Se puede modificar para introducirla manual)
+		                            	        Date fechaEnvase = new Date(); // asigna la fecha actual como  de envase(Se puede modificar para introducirla manual)
 		
-		                            	        Comida comida = new Comida(nombreComida, precioComida, null, perecedero, calorias, vegano, fechaEnvaseComida);
+		                            	        Comida comida = new Comida(nombreComida, precioComida, null, fechaEnvase, perecedero, calorias, vegano);
 		                            	        //La fecha de caducidad es null porque dentro del constructor se establece segun los valores introducidos
 		                            	        gestionProductos.agregarProducto(comida); // se usa el método para agregar el producto
 	                            	    	}catch (java.util.InputMismatchException e) { // aqui capturo la excepción y muestro el mensaje
@@ -292,9 +292,9 @@ public class Menu {
 		                            	        boolean gaseoso = scanner.nextBoolean();
 		                            	        System.out.print("¿Es lácteo? (true/false): ");
 		                            	        boolean lacteo = scanner.nextBoolean();		                           	        
-		                            	        Date fechaEnvaseBebida = new Date(); // Puedes personalizar esta fecha
+		                            	        Date fechaEnvase = new Date(); // Puedes personalizar esta fecha
 		
-		                            	        Bebida bebida = new Bebida(nombreBebida, precioBebida, null, gaseoso, medida, lacteo, fechaEnvaseBebida);
+		                            	        Bebida bebida = new Bebida(nombreBebida, precioBebida, null,fechaEnvase, gaseoso, medida, lacteo);
 		                            	        gestionProductos.agregarProducto(bebida);
 	                            	    	}catch (java.util.InputMismatchException e) {
 	                            	            System.err.println("Debe ingresar un valor válido!\nNúmeros si contiene decimales  separalo con ','\nEn caso de true o false, escribalo correctamente."); // Mensaje de error
@@ -349,8 +349,9 @@ public class Menu {
                                         System.out.println("1. Modificar Nombre");
                                         System.out.println("2. Modificar Precio");
                                         System.out.println("3. Modificar Estado");
-                                        System.out.println("4. Modificar Atributos Específicos");
-                                        System.out.println("5. Regresar");
+                                        System.out.println("4. Modificar Fecha de envase");
+                                        System.out.println("5. Modificar Atributos Específicos");
+                                        System.out.println("6. Regresar");
                                         System.out.print("Seleccione una opción: ");
                                         opcionModificarProducto = scanner.next();
 
@@ -375,8 +376,20 @@ public class Menu {
                                                 productoModificar.setEstado(nuevoEstado);
                                                 System.out.println("Estado modificado exitosamente.");
                                                 break;
+                                                
+                                            case "4": // Cambiar la fecha de envase de un producto                                               
+                                                    System.out.print("Ingrese la nueva fecha de envase (dd-MM-yyyy): "); // Solicita la nueva fecha
+                                                    String nuevaFechaEnvase = scanner.next(); // Captura la nueva fecha
+
+                                                    try {
+                                                        productoModificar.modificarFechaEnvase(nuevaFechaEnvase); // Cambia la fecha de envase
+                                                    } catch (Exception e) {
+                                                        System.err.println("Error al modificar la fecha de envase: " + e.getMessage()); // Muestra el error
+                                                    }
+                                                
+                                                break;
                                             
-                                            case "4"://Modifica los atributos especificos, usando el método abstracto que esta en cada una de las clases 
+                                            case "5"://Modifica los atributos especificos, usando el método abstracto que esta en cada una de las clases 
                                             	try { //Como puede lanzar la excepción InputMismatchException la captura(se podria hacer para no usarlo)
                                                 productoModificar.modificarAtributosEspecificos(scanner);
                                             }catch (java.util.InputMismatchException e) {
@@ -386,14 +399,15 @@ public class Menu {
                                                 break;
 
 
-                                            case "5": // Regresar
+                                            case "6": // Regresar
                                                 System.out.println("\nRegresando...");
                                                 break;
+                                                
 
                                             default: // si no pulsas la opción correspondiente
                                             	System.err.println("Opción no válida. Intente nuevamente.");
                                         }
-                                    } while (!opcionModificarProducto.equals("5"));
+                                    } while (!opcionModificarProducto.equals("6"));
 
                                 } else {
                                     System.out.println("\nProducto no encontrado.");
@@ -642,7 +656,7 @@ public class Menu {
                                 System.err.println("Pedido no encontrado con el código proporcionado.");
                             }
                             break;
-                            
+                                                                              
                         case "6": // Regresar al menú principal
                             System.out.println("\nRegresando al Menú Principal...");
                             break;
@@ -692,6 +706,8 @@ public class Menu {
                                         Tarjeta pagoTarjeta = new Tarjeta(pedidoPago.calcularTotal(), numeroTarjeta, titular, fechaCaducidad, codigoSeguridad);
                                         if (pagoTarjeta.procesarPago()) {
                                             System.out.println("El pago con tarjeta se realizó exitosamente.");
+                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
+                                            
                                         }
                                     } catch (TarjetaInvalidaException e) {
                                         System.err.println("Error: " + e.getMessage());
@@ -713,6 +729,8 @@ public class Menu {
                                         // Procesa el pago si las cuentas son válidas
                                         if (pagoTransferencia.procesarPago()) {
                                             System.out.println("El pago por transferencia se realizó exitosamente."); // Mensaje de confirmación
+                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
+                                            
                                         } 
 
                                     } catch (CuentaInvalidaException e) {
@@ -729,6 +747,9 @@ public class Menu {
                                     if (entrega >= pedidoPago.calcularTotal()) { // Verifica que la entrega sea suficiente
                                         Efectivo pagoEfectivo = new Efectivo(pedidoPago.calcularTotal(), entrega);
                                         pagoEfectivo.procesarPago(); // Procesa el pago en efectivo y calcula el cambio
+                                        
+                                        gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
+
                                     } else {
                                         System.err.println("La cantidad entregada es insuficiente para realizar el pago.");
                                     }

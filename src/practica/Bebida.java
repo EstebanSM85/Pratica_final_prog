@@ -11,15 +11,13 @@ public class Bebida extends Producto {
 	private boolean gaseoso;
 	private int medida;
 	private boolean lacteo;
-	private Date fechaEnvaseBebida;
 		
 	//contructor propio de la clase Bebida
-	public Bebida(String nombre, double precio, Date caducidad, boolean gaseoso, int medida, boolean lacteo, Date fechaEnvaseBebida) {
-		super(nombre, precio, caducidad, "Correcto"); // Uso el constructor Abstract,añado automaticamente correcto al estado
+	public Bebida(String nombre, double precio, Date caducidad,Date fechaEnvase, boolean gaseoso, int medida, boolean lacteo) {
+		super(nombre, precio, caducidad, "Correcto",fechaEnvase); // Uso el constructor Abstract,añado automaticamente correcto al estado
 	    this.gaseoso = gaseoso;
 	    this.medida = medida;
 	    this.lacteo = lacteo;
-	    this.fechaEnvaseBebida = fechaEnvaseBebida;
 	    this.setCaducidad(obtener_caducidad()); // Calculamos y asignamos la caducidad automáticamente
 	}
 	
@@ -51,19 +49,12 @@ public class Bebida extends Producto {
 		this.lacteo = lacteo;
 	}
 	
-	public Date getFechaEnvase() {
-		return fechaEnvaseBebida;
-	}
-
-	public void setFechaEnvase(Date fecha_envase) {
-		this.fechaEnvaseBebida = fecha_envase;
-	}
 
 	//Métodos
 	@Override
 	public Date obtener_caducidad() { //Método para como dice obtener la fecha de caducidad según la opción que se elija
 		Calendar tiempo = Calendar.getInstance(); //Instancio la clase Calendar para usarla
-        tiempo.setTime(fechaEnvaseBebida); // Introduzco la fecha de envasasado
+        tiempo.setTime(getFechaEnvase()); // Introduzco la fecha de envasasado
 		  if (lacteo) { // Si lacteo es true, devuelve la fecha de caducidad introducidad más 10 días 
 	            tiempo.add(Calendar.DAY_OF_YEAR, 10); // Sumo los 10 días
 	            return tiempo.getTime();// Devuelve la nueva fecha de caducidad como Date
@@ -76,21 +67,41 @@ public class Bebida extends Producto {
 	}
 
 	@Override
-	public String detalle_producto() { // Método que muestra los detalles de los productos
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); //Se formatea la fecha para mostrar solo dd-mm-yyyy
-	    String nuevaFechaEnvase = dateFormat.format(fechaEnvaseBebida);
-	    String nuevaFechaCaducidad = dateFormat.format(getCaducidad()); // Formateo de caducidad
-	    
-		return "------ Información del Producto ------"+
-				"Nombre: " + getNombre() +    //Uso los getter para obtener los datos
-		        "\nPrecio: " + getPrecio() +
-		        "\nFecha de Caducidad: " +nuevaFechaCaducidad +
-		        "\nEstado: " + getEstado() +
-		        "\nGaseoso: " + (isGaseoso() ? "Sí" : "No") + //Uso un el operador ? para que si es true ponga si y si es false ponga no
-		        "\nMedida: " + getMedida() +
-		        "\nLacteo: " + (isLacteo() ? "Sí" : "No") +
-		        "\nFecha de Envase: " + nuevaFechaEnvase+
-				"\n------------------------------------";
+	public String detalle_producto() {
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	    long diferenciaDias = (getCaducidad().getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24); // Diferencia en días
+
+	    // Si el producto ya está caducado
+	    if (new Date().after(getCaducidad())) {
+	        setEstado("CADUCADO"); // Cambia el estado a "CADUCADO"
+	    }
+
+	    // Si está próximo a caducar (menos de 5 días)
+	    if (diferenciaDias <= 5) {
+	        double precioOferta = getPrecio() * 0.7; // Aplica el 30% de descuento
+	        return "------ OFERTA ------\n" +
+	               "Nombre: " + getNombre() +
+	               "\nPrecio con Descuento: " + precioOferta +
+	               "\nFecha de Caducidad: " + dateFormat.format(getCaducidad()) +
+	               "\nEstado: " + getEstado() +
+	               "\nGaseoso: " + (isGaseoso() ? "Sí" : "No") +
+	               "\nMedida: " + getMedida() + "ml" +
+	               "\nLácteo: " + (isLacteo() ? "Sí" : "No") +
+	               "\nFecha de Envase: " + dateFormat.format(getFechaEnvase()) +
+	               "\n------------------------------------";
+	    }
+
+	    // Producto en estado normal
+	    return "------ Información del Producto ------" +
+	           "\nNombre: " + getNombre() +
+	           "\nPrecio: " + getPrecio() +
+	           "\nFecha de Caducidad: " + dateFormat.format(getCaducidad()) +
+	           "\nEstado: " + getEstado() +
+	           "\nGaseoso: " + (isGaseoso() ? "Sí" : "No") +
+	           "\nMedida: " + getMedida() + "ml" +
+	           "\nLácteo: " + (isLacteo() ? "Sí" : "No") +
+	           "\nFecha de Envase: " + dateFormat.format(getFechaEnvase()) +
+	           "\n------------------------------------";
 	}
 	
 	@Override
