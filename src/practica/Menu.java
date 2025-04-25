@@ -22,7 +22,7 @@ public class Menu {
         String opcion;
 
         do { //Menú principal
-            System.out.println("====== Menú ======");
+            System.out.println("\n====== Menú ======");
             System.out.println("1. Gestionar Clientes");
             System.out.println("2. Gestionar Productos");
             System.out.println("3. Gestionar Pedidos");
@@ -454,7 +454,18 @@ public class Menu {
                                     // si no lo encuentra el método buscar lanzara un mensaje de error
 
                                     if (productoPedido != null) { //Si la variable tiene un valor, lo añade
-                                        productosPedido.add(productoPedido);
+                                    	 if ("CADUCADO".equals(productoPedido.getEstado())) {
+                                    	        System.err.println("Producto no disponible. Está caducado."); // Bloquear productos caducados
+                                    	    } else {
+                                    	        if ((productoPedido.getCaducidad().getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24) <= 5) {
+                                    	            double precioOferta = productoPedido.getPrecio() * 0.7; // Aplica el descuento
+                                    	            System.out.println("Producto en oferta. Precio con descuento: " + precioOferta);
+                                    	        } else {
+                                    	            System.out.println("Producto añadido al pedido. Precio: " + productoPedido.getPrecio());
+                                    	        }
+                                    	        productosPedido.add(productoPedido); // Añadir el producto al pedido
+                                    	    }
+
                                         System.out.println("Producto añadido al pedido.");//Mensaje de confirmación
                                     }//No pongo mensaje de error ya que el método buscar si no encuentra ya muestra uno
 
@@ -668,104 +679,108 @@ public class Menu {
                     }while (!opcionPedidos.equals("6"));
                     break;
 
-                case "4": // Procesar el pago del pedido
-
-                    // Solicita el código del pedido a pagar
-                    System.out.print("\nIngrese el código del pedido que desea pagar: ");
-                    int codigoPedidoPago = scanner.nextInt(); // Captura el código del pedido
-                    Pedido pedidoPago = gestionPedidos.buscarPedido(codigoPedidoPago); // Busca el pedido por código
-
-                    if (pedidoPago != null) { // Si el pedido existe
-                        System.out.println("\nPedido encontrado:");
-                        System.out.println(pedidoPago.mostrarPedido()); // Muestra los detalles del pedido
-
-                        String opcionPago; // Variable para seleccionar la forma de pago
-                        do {
-                            System.out.println("\n=== Métodos de Pago ===");
-                            System.out.println("1. Tarjeta de Crédito/Débito");
-                            System.out.println("2. Transferencia Bancaria");
-                            System.out.println("3. Pago en Efectivo");
-                            System.out.println("4. Regresar");
-                            System.out.print("Seleccione una opción: ");
-                            opcionPago = scanner.next(); // Captura la opción seleccionada por el usuario
-
-                            switch (opcionPago) {// Pago con tarjeta de crédito/débito
-
-                                case "1": // Tarjeta
-                                    System.out.println("\n--- Pago con Tarjeta ---"); //Se introducen los datos de la tarjeta
-                                    System.out.print("Ingrese el número de la tarjeta(16 dígitos sin espacios): ");
-                                    String numeroTarjeta = scanner.next();
-                                    System.out.print("Ingrese el titular de la tarjeta: ");
-                                    String titular = scanner.next();
-                                    System.out.print("Ingrese la fecha de caducidad (MM/AA): "); //Se verifica dentro del constructor
-                                    String fechaCaducidad = scanner.next();
-                                    System.out.print("Ingrese el código de seguridad: ");
-                                    int codigoSeguridad = scanner.nextInt();
-
-                                    try {
-                                        Tarjeta pagoTarjeta = new Tarjeta(pedidoPago.calcularTotal(), numeroTarjeta, titular, fechaCaducidad, codigoSeguridad);
-                                        if (pagoTarjeta.procesarPago()) {
-                                            System.out.println("El pago con tarjeta se realizó exitosamente.");
-                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
-                                            
-                                        }
-                                    } catch (TarjetaInvalidaException e) {
-                                        System.err.println("Error: " + e.getMessage());
-                                    }
-                                    break;
-
-
-                                case "2": // Transferencia
-                                    System.out.println("\n--- Pago por Transferencia ---"); // Se introducen los datos de las cuentas
-                                    System.out.print("Ingrese la cuenta origen(20 dígitos, sin espacios): ");
-                                    String cuentaOrigen = scanner.next(); // Captura la cuenta de origen
-                                    System.out.print("Ingrese la cuenta destino(20 dígitos, sin espacios): ");
-                                    String cuentaDestino = scanner.next(); // Captura la cuenta de destino
-
-                                    try {
-                                        // Intenta crear el objeto Transferencia
-                                        Transferencia pagoTransferencia = new Transferencia(pedidoPago.calcularTotal(), cuentaOrigen, cuentaDestino);
-
-                                        // Procesa el pago si las cuentas son válidas
-                                        if (pagoTransferencia.procesarPago()) {
-                                            System.out.println("El pago por transferencia se realizó exitosamente."); // Mensaje de confirmación
-                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
-                                            
-                                        } 
-
-                                    } catch (CuentaInvalidaException e) {
-                                        // Captura la excepción lanzada por el constructor y muestra un mensaje de error
-                                        System.err.println("Error al crear la transferencia: " + e.getMessage());
-                                    }
-                                    break;
-
-                                case "3": // Efectivo
-                                    System.out.println("\n--- Pago en Efectivo ---");
-                                    System.out.print("Ingrese la cantidad entregada: ");
-                                    double entrega = scanner.nextDouble();
-
-                                    if (entrega >= pedidoPago.calcularTotal()) { // Verifica que la entrega sea suficiente
-                                        Efectivo pagoEfectivo = new Efectivo(pedidoPago.calcularTotal(), entrega);
-                                        pagoEfectivo.procesarPago(); // Procesa el pago en efectivo y calcula el cambio
-                                        
-                                        gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
-
-                                    } else {
-                                        System.err.println("La cantidad entregada es insuficiente para realizar el pago.");
-                                    }
-                                    break;
-
-                                case "4": // Regresar
-                                    System.out.println("\nRegresando al menú anterior...");
-                                    break;
-
-                                default:
-                                    System.err.println("Opción no válida. Intente nuevamente.");
-                            }
-                        } while (!opcionPago.equals("4")); // Se repite hasta que el usuario pulse 4
-                    } else { // Si el pedido no existe
-                        System.err.println("Pedido no encontrado con el código proporcionado.");//Mensaje de error
+                case "4": // Procesar el pago del pedido                   
+                	try {
+	                    System.out.print("\nIngrese el código del pedido que desea pagar: "); // Solicita el código del pedido a pagar
+	                    int codigoPedidoPago = scanner.nextInt(); // Captura el código del pedido
+	                    Pedido pedidoPago = gestionPedidos.buscarPedido(codigoPedidoPago); // Busca el pedido por código
+	
+	                    if (pedidoPago != null) { // Si el pedido existe
+	                        System.out.println("\nPedido encontrado:");
+	                        System.out.println(pedidoPago.mostrarPedido()); // Muestra los detalles del pedido
+	
+	                        String opcionPago; // Variable para seleccionar la forma de pago
+	                        do {
+	                            System.out.println("\n=== Métodos de Pago ===");
+	                            System.out.println("1. Tarjeta de Crédito/Débito");
+	                            System.out.println("2. Transferencia Bancaria");
+	                            System.out.println("3. Pago en Efectivo");
+	                            System.out.println("4. Regresar");
+	                            System.out.print("Seleccione una opción: ");
+	                            opcionPago = scanner.next(); // Captura la opción seleccionada por el usuario
+	
+	                            switch (opcionPago) {// Pago con tarjeta de crédito/débito
+	
+	                                case "1": // Tarjeta
+	                                    System.out.println("\n--- Pago con Tarjeta ---"); //Se introducen los datos de la tarjeta
+	                                    System.out.print("Ingrese el número de la tarjeta(16 dígitos sin espacios): ");
+	                                    String numeroTarjeta = scanner.next();
+	                                    System.out.print("Ingrese el titular de la tarjeta: ");
+	                                    String titular = scanner.next();
+	                                    System.out.print("Ingrese la fecha de caducidad (MM/AA): "); //Se verifica dentro del constructor
+	                                    String fechaCaducidad = scanner.next();
+	                                    System.out.print("Ingrese el código de seguridad: ");
+	                                    int codigoSeguridad = scanner.nextInt();
+	
+	                                    try {
+	                                        Tarjeta pagoTarjeta = new Tarjeta(pedidoPago.calcularTotal(), numeroTarjeta, titular, fechaCaducidad, codigoSeguridad);
+	                                        if (pagoTarjeta.procesarPago()) {
+	                                            System.out.println("El pago con tarjeta se realizó exitosamente.");
+	                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
+	                                            
+	                                        }
+	                                    } catch (TarjetaInvalidaException e) {
+	                                        System.err.println("Error: " + e.getMessage());
+	                                    }
+	                                    break;
+	
+	
+	                                case "2": // Transferencia
+	                                    System.out.println("\n--- Pago por Transferencia ---"); // Se introducen los datos de las cuentas
+	                                    System.out.print("Ingrese la cuenta origen(20 dígitos, sin espacios): ");
+	                                    String cuentaOrigen = scanner.next(); // Captura la cuenta de origen
+	                                    System.out.print("Ingrese la cuenta destino(20 dígitos, sin espacios): ");
+	                                    String cuentaDestino = scanner.next(); // Captura la cuenta de destino
+	
+	                                    try {
+	                                        // Intenta crear el objeto Transferencia
+	                                        Transferencia pagoTransferencia = new Transferencia(pedidoPago.calcularTotal(), cuentaOrigen, cuentaDestino);
+	
+	                                        // Procesa el pago si las cuentas son válidas
+	                                        if (pagoTransferencia.procesarPago()) {
+	                                            System.out.println("El pago por transferencia se realizó exitosamente."); // Mensaje de confirmación
+	                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
+	                                            
+	                                        } 
+	
+	                                    } catch (CuentaInvalidaException e) {
+	                                        // Captura la excepción lanzada por el constructor y muestra un mensaje de error
+	                                        System.err.println("Error al crear la transferencia: " + e.getMessage());
+	                                    }
+	                                    break;
+	
+	                                case "3": // Efectivo
+	                                    System.out.println("\n--- Pago en Efectivo ---");
+	                                    System.out.print("Ingrese la cantidad entregada: ");
+	                                    double entrega = scanner.nextDouble();
+	
+	                                    if (entrega >= pedidoPago.calcularTotal()) { // Verifica que la entrega sea suficiente
+	                                        Efectivo pagoEfectivo = new Efectivo(pedidoPago.calcularTotal(), entrega);
+	                                        pagoEfectivo.procesarPago(); // Procesa el pago en efectivo y calcula el cambio
+	                                        
+	                                        gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
+	
+	                                    } else {
+	                                        System.err.println("La cantidad entregada es insuficiente para realizar el pago.");
+	                                    }
+	                                    break;
+	
+	                                case "4": // Regresar
+	                                    System.out.println("\nRegresando al menú anterior...");
+	                                    break;
+	
+	                                default:
+	                                    System.err.println("Opción no válida. Intente nuevamente.");
+	                            }
+	                        } while (!opcionPago.equals("4")); // Se repite hasta que el usuario pulse 4
+	                    } else { // Si el pedido no existe
+	                        System.err.println("Pedido no encontrado con el código proporcionado.");//Mensaje de error
+	                    } 
+                	}catch (java.util.InputMismatchException e) {
+                        System.err.println("\nCódigo introducido erróneo, solo números.");
+                        scanner.nextLine(); // Limpia la entrada inválida
                     }
+
                     break;
 
                 case "5": //Cierra el programa

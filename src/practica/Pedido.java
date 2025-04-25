@@ -60,12 +60,17 @@ public class Pedido {
 
     // Método para calcular el total del pedido
     public double calcularTotal() {
-        double total = 0;// se inicia a 0 para poder usarlo
-        for (Producto producto : productos) { // recorre la lista productos
-            total += producto.getPrecio(); // A total le suma el precio del producto 
+        double total = 0;
+        for (Producto producto : productos) {//Recorre la lista de productos
+            if ((producto.getCaducidad().getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24) <= 5) {
+                total += producto.getPrecio() * 0.7; // Usa el precio con descuento si está en oferta
+            } else {
+                total += producto.getPrecio(); // Usa el precio normal
+            }
         }
-        return total; // cuando acaba devuelve la suma total
+        return total;
     }
+
 
     // Método para mostrar detalles del pedido
     public String mostrarPedido() {

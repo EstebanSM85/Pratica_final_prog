@@ -1,6 +1,7 @@
 package practica;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GestionPedidos implements Imprimir {
@@ -64,7 +65,14 @@ public class GestionPedidos implements Imprimir {
             System.out.println("Fecha Pedido: " + pedido.getFechaPedido());
             System.out.println("Productos:");
             for (Producto producto : pedido.getProductos()) {
-                System.out.println("- " + producto.getNombre() + " (Precio: " + producto.getPrecio() + "€)");
+            	double precioReal = producto.getPrecio(); // Precio original
+                long diferenciaDias = (producto.getCaducidad().getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24); // Diferencia en días
+
+                if (diferenciaDias <= 5) { // Si el producto está en oferta
+                    precioReal *= 0.7; // Aplica el descuento del 30%
+                }
+
+                System.out.println("- " + producto.getNombre() + " (Precio: " + precioReal + "€)");
             }
             System.out.println("Total Pedido: " + pedido.calcularTotal() + "€");
             System.out.println("-------------------------");

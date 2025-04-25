@@ -59,8 +59,14 @@ public class Comida extends Producto { //extends Producto porque hereda de esa c
             return tiempo.getTime();// Devuelve la nueva fecha de caducidad como Date
         }
         else {// Si no es perecedero, devuelve la fecha de caducidad actual 
-            return new Date(); 
+        	// Devuelve una fecha ficticia para indicar que no tiene fecha de caducidad
+            tiempo.set(Calendar.YEAR, 9999);
+            tiempo.set(Calendar.MONTH, Calendar.DECEMBER);
+            tiempo.set(Calendar.DAY_OF_MONTH, 31);
+            return tiempo.getTime();
         }
+
+        
     }
 
 	@Override
