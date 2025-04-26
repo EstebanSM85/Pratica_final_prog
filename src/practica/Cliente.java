@@ -1,9 +1,10 @@
 package practica;
 
 import java.util.Date;//Se importa la clase para guardar la fecha
+import java.io.Serializable; //Se importa para poder hacer la persistencia de datos
 import java.text.SimpleDateFormat;//Se importa para dar formato a la fecha
 
-public class Cliente {
+public class Cliente implements Serializable {
 	// Aqui pongo los atributos
 	private String nombre;
 	private String apellidos;
@@ -113,6 +114,19 @@ public class Cliente {
 		return codigo;
 	}
 	
+	public void setCodigo(int codigo) {
+		this.codigo = codigo;
+	}
+	
+
+	public static void setContadorCodigo(int nuevoContador) {
+	    contadorCodigo = nuevoContador; // Actualiza el contador estático
+	}
+
+	public static int getContadorCodigo() {
+		return contadorCodigo;
+	}
+	
 	public String mostrar()	{ // Motramos los datos del cliente usando los getter
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); //Se formatea la fecha para mostrar solo dd-mm-yyyy
 	    String fechaFormateada = dateFormat.format(fechaAlta);
@@ -128,5 +142,8 @@ public class Cliente {
 				"\n------------------------------------";
 
 	}
+
+				
+
 	
 }

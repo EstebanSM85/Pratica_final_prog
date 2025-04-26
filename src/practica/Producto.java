@@ -1,9 +1,10 @@
 package practica;
 
 import java.util.Scanner;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-public abstract class Producto {
+public abstract class Producto implements Serializable {
 	//Atributos 
 	private String nombre;
     private double precio;

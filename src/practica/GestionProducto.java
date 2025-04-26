@@ -1,5 +1,11 @@
 package practica;
 
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +64,32 @@ public class GestionProducto {
         } else {
             System.err.println("\nProducto no encontrado: " + nombre);// Mensaje de error
             return false;
+        }
+    }
+    
+    public void guardarProductos() {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("productos.txt"))) {
+            for (Producto producto : productos) {
+                out.writeObject(producto); // Serializamos cada objeto Producto
+            }
+            System.out.println("Productos guardados.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar los productos: " + e.getMessage());
+        }
+    }
+    
+    public void cargarProductos() {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("productos.txt"))) {
+            Producto producto;
+            while (true) {
+                producto = (Producto) in.readObject(); // Deserializamos cada objeto Producto
+                productos.add(producto); // Lo añadimos a la lista
+            }
+        } catch (EOFException e) {
+            // Se espera esta excepción para terminar de leer el archivo
+            System.out.println("Productos cargados desde el archivo.");
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al cargar los productos: " + e.getMessage());
         }
     }
 }

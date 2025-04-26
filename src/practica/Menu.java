@@ -15,8 +15,12 @@ public class Menu {
 
     public static void main(String[] args) {
         GestionCliente gestionClientes = new GestionCliente(); // Se declara e instancia los objetos que se van a utilizar
+        gestionClientes.cargarClientes();//Cargamos los clientes que hayan guardados
         GestionProducto gestionProductos = new GestionProducto();
+        gestionProductos.cargarProductos(); // Cargamos los productos que hayan guardados
         GestionPedidos gestionPedidos = new GestionPedidos();
+        gestionPedidos.cargarPedidos(); // Cargamos los pedidos guardados
+
         Scanner scanner = new Scanner(System.in); 
         String opcion; // Se declara la variable
 
@@ -792,7 +796,13 @@ public class Menu {
                     break;
 
                 case "5": //Cierra el programa
-                    System.out.println("Saliendo del sistema...");
+                    System.out.println("\nSaliendo del sistema...");
+                    System.out.println("Guardando datos antes de salir...");
+                    gestionClientes.guardarClientes();
+                    gestionProductos.guardarProductos();
+                    gestionPedidos.guardarPedidos();
+                    System.out.println("¡Hasta pronto!");
+                    System.exit(0);
                     break;
 
                 default:

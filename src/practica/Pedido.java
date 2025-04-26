@@ -1,10 +1,11 @@
 package practica;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class Pedido {
+public class Pedido implements Serializable {
     // Atributos de la clase Pedido
     private Cliente cliente;
     private List<Producto> productos;
@@ -57,6 +58,15 @@ public class Pedido {
             System.err.println("Fecha inválida. No se realizó ningún cambio."); // Mensaje de error en caso de excepción
         }
     }
+    
+    public static void setContadorCodigoPedido(int nuevoContador) {
+        contadorCodigoPedido = nuevoContador;
+    }
+    
+    public static int getContadorCodigoPedido() {
+        return contadorCodigoPedido;
+    }
+
 
     // Método para calcular el total del pedido
     public double calcularTotal() {

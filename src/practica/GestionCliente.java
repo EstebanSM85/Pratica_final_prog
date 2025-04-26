@@ -1,5 +1,11 @@
 package practica;
 
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 	
@@ -57,4 +63,40 @@ public class GestionCliente {
         }
     }
 	
+	public void guardarClientes() {
+	    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("clientes.txt"))) {
+	        for (Cliente cliente : clientes) {
+	            out.writeObject(cliente); // Serializamos cada objeto Cliente
+	        }
+	        System.out.println("Clientes guardados.");
+	    } catch (IOException e) {
+	        System.err.println("Error al guardar los clientes: " + e.getMessage());
+	    }
+	}
+	
+	public void cargarClientes() {
+	    int maxCodigo = 0; // Declaramos maxCodigo fuera del bloque try
+
+	    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("clientes.txt"))) {
+	        Cliente cliente;
+
+	        while (true) {
+	            cliente = (Cliente) in.readObject(); // Deserializamos cada objeto Cliente
+	            clientes.add(cliente); // Lo añadimos a la lista
+	            
+	            // Actualizamos el máximo código encontrado
+	            if (cliente.getCodigo() > maxCodigo) {
+	                maxCodigo = cliente.getCodigo();
+	            }
+	        }
+	    } catch (EOFException e) {
+	        // Se espera esta excepción para terminar de leer el archivo
+	        System.out.println("Clientes cargados desde el archivo.");
+	    } catch (IOException | ClassNotFoundException e) {
+	        System.err.println("Error al cargar los clientes: " + e.getMessage());
+	    }
+
+	    // Ajustamos el atributo estático contadorCodigo en la clase Cliente
+	    Cliente.setContadorCodigo(maxCodigo + 1); // El siguiente cliente nuevo tendrá un código único
+	}
 }
