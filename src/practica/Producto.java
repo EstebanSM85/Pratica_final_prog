@@ -62,7 +62,7 @@ public abstract class Producto {
 		this.estado = estado;
 	}
 
-	public void modificarFechaEnvase(String nuevaFechaEnvase) throws java.text.ParseException {
+	public void modificarFechaEnvase(String nuevaFechaEnvase) throws java.text.ParseException { // captura la excepcion quien llama al método
 	    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 	    dateFormat.setLenient(false); // Validación estricta
 	    try {

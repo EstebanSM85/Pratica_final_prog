@@ -74,6 +74,7 @@ public class Bebida extends Producto {
 	    // Si el producto ya está caducado
 	    if (new Date().after(getCaducidad())) {
 	        setEstado("CADUCADO"); // Cambia el estado a "CADUCADO"
+	        return null;
 	    }
 
 	    // Si está próximo a caducar (menos de 5 días)

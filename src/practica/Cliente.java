@@ -16,7 +16,7 @@ public class Cliente {
 
 				
 	//Constructor
-	public Cliente(String nombre, String apellidos,String telefono, String direccion,Date fechaAlta, String historial){
+	public Cliente(String nombre, String apellidos,String telefono, String direccion,Date fechaAlta, String historial) throws TelefonoInvalidoException {
 		this.nombre=nombre;
 		this.apellidos=apellidos;
 		this.direccion=direccion;
@@ -26,11 +26,12 @@ public class Cliente {
         contadorCodigo++;				// Me aseguro que sume uno cada vez que se cree uno
         
      	// Se comprueba el numero de telegono que sea correcto
+        
         if (telefono.matches("[6789]\\d{8}")) { // El número debe empezar con 6, 7, 8, o 9 y tener 9 dígitos
             this.telefono = telefono;
         } else {
-            System.err.println("El número de teléfono no es válido. Se asignará 'Desconocido'.");
-            this.telefono = "Desconocido"; // Se le asigna esto para que no ponga null, en caso de no tener
+        	throw new TelefonoInvalidoException("El número de teléfono no es válido.");
+        	
         }
 
 
@@ -82,7 +83,9 @@ public class Cliente {
 		return telefono; 
 	} 
 			
-	public void setTelefono(String telefono) { // Aquí compruebo  que el número introducido con el setter sea el correcto
+	public void setTelefono(String telefono) throws TelefonoInvalidoException  { 
+		/* Aquí compruebo  que el número introducido con el setter sea el correcto,
+		 * throws es el que captura la exception, es el método que lo llama.*/
 		if (telefono.matches("[6789]\\d{8}+")){ // Como en el constructor el número debe empezar con 6, 7, 8, o 9 y tener 9 dígitos
 			this.telefono = telefono;
 		} else {

@@ -14,15 +14,14 @@ import java.util.Scanner;
 public class Menu {
 
     public static void main(String[] args) {
-        GestionCliente gestionClientes = new GestionCliente();
+        GestionCliente gestionClientes = new GestionCliente(); // Se declara e instancia los objetos que se van a utilizar
         GestionProducto gestionProductos = new GestionProducto();
         GestionPedidos gestionPedidos = new GestionPedidos();
+        Scanner scanner = new Scanner(System.in); 
+        String opcion; // Se declara la variable
 
-        Scanner scanner = new Scanner(System.in);
-        String opcion;
-
-        do { //Menú principal
-            System.out.println("\n====== Menú ======");
+        do { //Menú principal. Se usa un do para que lo haga por lo menos una vez
+            System.out.println("\n====== Menú ======"); // Muestra por pantalla las opciones
             System.out.println("1. Gestionar Clientes");
             System.out.println("2. Gestionar Productos");
             System.out.println("3. Gestionar Pedidos");
@@ -30,9 +29,9 @@ public class Menu {
             System.out.println("5. Salir");
             System.out.print("Seleccione una opción: ");
             System.out.println();
-            opcion = scanner.next();
+            opcion = scanner.next();  //Recoge la opción del usuario
 
-            switch (opcion) {
+            switch (opcion) { //Usa switch para seleccionar que hace en cada opción
                 case "1":
                     String opcionClientes;
                     do { // Submenú para gestionar a los clientes                   	
@@ -53,29 +52,35 @@ public class Menu {
                                 String nombre = scanner.next();
                                 System.out.print("Ingrese apellidos: ");
                                 String apellidos = scanner.next();
-                                System.out.print("Ingrese teléfono: ");
+                                System.out.print("Ingrese teléfono (9 dígitos, sin espacios): ");
                                 String telefono = scanner.next();
                                 System.out.print("Ingrese dirección: ");
                                 String direccion = scanner.next();
-                                Cliente cliente = new Cliente(nombre, apellidos, telefono, direccion, new Date(), "");
+                                
+                                //Se crea un cliente nuevo, con el bloque try capturamos la posible excepción que pueda lanzar el contructor
+                                try {
+                                Cliente cliente = new Cliente(nombre, apellidos, telefono, direccion, new Date(), ""); 
                                 gestionClientes.agregarCliente(cliente);
+                                }catch (TelefonoInvalidoException e) { // Aqui la captura 
+                                    System.err.println("Error al crear el cliente: " + e.getMessage());//Mensaje de error 
+                                }
                                 break;
 
                             case "2": //Se muestra una lista de los clientes guardados usando el método .listarClientes
                             	System.out.println();
-                                gestionClientes.listarClientes();
+                                gestionClientes.listarClientes(); //Usa método listarCliente que esta en gestionCliente
                                 break;
 
                             case "3": // Se busca un cliente con el codigo único proporcionado al darle de alta
-                            	    boolean entradaValida = false; // Bandera para controlar la validez de la entrada
-                            	    int codigo = 0;
+                            	    boolean entradaValida = false; //Se instancia e inicia la variable para controlar la validez de la entrada
+                            	    int codigo = 0; //Se instancia e inicia la variable
 
-                            	    while (!entradaValida) {
+                            	    while (!entradaValida) { //Mientras entrada valida no sea true  entrara
                             	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
                             	            System.out.print("\nIngrese el código del cliente a buscar: ");
                             	            codigo = scanner.nextInt(); // Intenta leer el código como entero
                             	            entradaValida = true; // Si llega aquí, la entrada es válida
-                            	        } catch (java.util.InputMismatchException e) {
+                            	        } catch (java.util.InputMismatchException e) { // Se captura la excepción
                             	            System.err.println("Debe ingresar un número válido.");
                             	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
                             	        }
@@ -90,7 +95,7 @@ public class Menu {
                                 break;
                                 
                             case "4": // Se usa el método eliminarCliente para eliminar un cliente de la lista
-                            	 boolean entradaValidaEliminar = false; // Bandera para controlar la validez de la entrada
+                            	 boolean entradaValidaEliminar = false; // Variable para controlar la validez de la entrada
                          	    int codigoABorrar =0;
 
                          	    while (!entradaValidaEliminar) {
@@ -107,12 +112,12 @@ public class Menu {
                                 if (resultado) { 
                                     System.out.println("El cliente ha sido eliminado exitosamente."); // Mensaje de éxito
                                 } else {
-                                    System.out.println(); //No muestro mensaje de error ya que los métodos llamados ya lo hacen
+                                    System.out.println(); //No muestra mensaje de error ya que los métodos llamados ya lo hacen
                                 }
                                 break;
                                
                             case "5": // Modificar cliente
-                            	boolean entradaValidaModificar = false; // Bandera para controlar la validez de la entrada
+                            	boolean entradaValidaModificar = false; // Variable para controlar la validez de la entrada
                          	    int codigoAModificar = 0;
 
                          	    while (!entradaValidaModificar) {
@@ -151,7 +156,7 @@ public class Menu {
                                         switch (opcionModificar) {
                                             case "1": // Modificar nombre (case 1,2,3,4 y 6 funcionan igual solo pongo comentario en el primero
                       
-                                            	System.out.print("\nIngrese el nuevo nombre: ");
+                                            	System.out.print("\nIngrese el nuevo nombre: ");//Mensaje con lo que se pide
                                                 String nuevoNombre = scanner.next(); //recoge el nombre que introduzca el usuario
                                                 clienteModificar.setNombre(nuevoNombre);// El setter lo asigna
                                                 System.out.println("Nombre modificado exitosamente."); // Mensaje de exito
@@ -167,9 +172,13 @@ public class Menu {
 
                                             case "3": // Modificar teléfono
                                                 
-                                            	System.out.print("\nIngrese el nuevo teléfono: ");
+                                            	System.out.print("\nIngrese el nuevo teléfono (9 dígitos, sin espacios): ");
+                                            	try { //Se usa para recoger una posible excepción al modificar el número de telefono
                                                 String nuevoTelefono = scanner.next();
-                                                clienteModificar.setTelefono(nuevoTelefono); // Validación en el setter de teléfono
+                                                clienteModificar.setTelefono(nuevoTelefono);
+                                            	}catch (TelefonoInvalidoException e) { // La capturamos y ponemos menaje personalizado
+                                                    System.err.println(e.getMessage());
+                                                }// Validación en el setter de teléfono
                                                 break;
 
                                             case "4": // Modificar dirección
@@ -222,7 +231,7 @@ public class Menu {
 
                             default:
                             	
-                            	System.err.println("\nOpción no válida. Intente nuevamente.");
+                            	System.err.println("\nOpción no válida. Intente nuevamente."); // En caso de qeu no sea una de las opciones que se hayan planteado
                         }
                     } while (!opcionClientes.equals("6"));
                     break;
@@ -319,7 +328,7 @@ public class Menu {
                             case "3": // Buscar Producto
                                 System.out.print("\nIngrese el nombre del producto a buscar: ");
                                 String nombreBusqueda = scanner.next(); 
-                                //Busca por nombre, esto me parece mejor hacerlo por codigo tambien, pero por variarlo un poco con respecto a cliente
+                                //Busca por nombre, esto me parece mejor hacerlo por codigo también, pero por variarlo un poco con respecto a cliente
                                 Producto productoEncontrado = gestionProductos.buscarProducto(nombreBusqueda);
                                 if (productoEncontrado != null) {
                                     System.out.println("\nProducto encontrado:");
@@ -716,8 +725,7 @@ public class Menu {
 	                                        Tarjeta pagoTarjeta = new Tarjeta(pedidoPago.calcularTotal(), numeroTarjeta, titular, fechaCaducidad, codigoSeguridad);
 	                                        if (pagoTarjeta.procesarPago()) {
 	                                            System.out.println("El pago con tarjeta se realizó exitosamente.");
-	                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
-	                                            
+	                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso	                                            
 	                                        }
 	                                    } catch (TarjetaInvalidaException e) {
 	                                        System.err.println("Error: " + e.getMessage());
@@ -734,15 +742,12 @@ public class Menu {
 	
 	                                    try {
 	                                        // Intenta crear el objeto Transferencia
-	                                        Transferencia pagoTransferencia = new Transferencia(pedidoPago.calcularTotal(), cuentaOrigen, cuentaDestino);
-	
+	                                        Transferencia pagoTransferencia = new Transferencia(pedidoPago.calcularTotal(), cuentaOrigen, cuentaDestino);	
 	                                        // Procesa el pago si las cuentas son válidas
 	                                        if (pagoTransferencia.procesarPago()) {
 	                                            System.out.println("El pago por transferencia se realizó exitosamente."); // Mensaje de confirmación
-	                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
-	                                            
-	                                        } 
-	
+	                                            gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso	                                            
+	                                        } 	
 	                                    } catch (CuentaInvalidaException e) {
 	                                        // Captura la excepción lanzada por el constructor y muestra un mensaje de error
 	                                        System.err.println("Error al crear la transferencia: " + e.getMessage());
@@ -753,16 +758,19 @@ public class Menu {
 	                                    System.out.println("\n--- Pago en Efectivo ---");
 	                                    System.out.print("Ingrese la cantidad entregada: ");
 	                                    double entrega = scanner.nextDouble();
-	
-	                                    if (entrega >= pedidoPago.calcularTotal()) { // Verifica que la entrega sea suficiente
-	                                        Efectivo pagoEfectivo = new Efectivo(pedidoPago.calcularTotal(), entrega);
-	                                        pagoEfectivo.procesarPago(); // Procesa el pago en efectivo y calcula el cambio
-	                                        
-	                                        gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso
-	
-	                                    } else {
-	                                        System.err.println("La cantidad entregada es insuficiente para realizar el pago.");
-	                                    }
+	                                    
+	                                    try {	
+		                                    if (entrega >= pedidoPago.calcularTotal()) { // Verifica que la entrega sea suficiente
+		                                        Efectivo pagoEfectivo = new Efectivo(pedidoPago.calcularTotal(), entrega);
+		                                        pagoEfectivo.procesarPago(); // Procesa el pago en efectivo y calcula el cambio		                                        
+		                                        gestionPedidos.imprimir(); // Imprimir ticket tras el pago exitoso		
+			                                }else { 
+			                                	throw new ImporteInsuficienteException("La cantidad entregada es insuficiente para realizar el pago.");
+		                                    }
+			                            } catch (ImporteInsuficienteException e) {
+			                                System.err.println(e.getMessage()); // Muestra el mensaje de error
+			                            }
+
 	                                    break;
 	
 	                                case "4": // Regresar
