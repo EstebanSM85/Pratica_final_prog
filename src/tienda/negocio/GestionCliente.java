@@ -1,0 +1,104 @@
+package tienda.negocio;
+
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import tienda.modelo.Cliente;
+	
+public class GestionCliente {
+	 // Lista para almacenar objetos Cliente en una lista llamada clientes
+	private List<Cliente> clientes;
+	
+	// Constructor para inicializar la lista uso un ArrayList porque necesito que sea dinamica 
+	public GestionCliente() {	     
+		this.clientes = new ArrayList<>();
+	}
+	
+	
+	// Método para añadir un cliente   
+	public void agregarCliente(Cliente cliente) {
+		if (cliente != null) { //si el cliente esta correcto lo añado a la lista 'clientes'
+			clientes.add(cliente);
+			System.out.println("Cliente agregado: " + cliente.getNombre()); //Mensaje de confirmación
+	    } else {
+	        System.out.println("El cliente no es válido."); //Mensaje de error
+	    }
+	}
+
+	// Método para listar todos los clientes
+	public void listarClientes() {
+		if (clientes.isEmpty()) {  //Muestro todos los clientes, si no hay saco el mensaje.
+	        System.err.println("No hay clientes registrados.");//mensaje de error
+	    } else {
+	    	for (Cliente cliente : clientes) { //uso el for each  porque queda mas limpio 
+	             System.out.println(cliente.mostrar());//Muestro cada cliente y pongo una separaración para que se vea mas claro
+	             System.out.println(" ");
+	        }
+	    }
+	}
+
+	// Método para buscar un cliente por su codigo
+	public Cliente buscarCliente(int  codigo) { //Cada cliente tiene su codigo unico asignado al crearlo
+	     for (Cliente cliente : clientes) {  //recorro el ArrayList
+	         if (cliente.getCodigo()==codigo) { // cuando el codigo proporcionado coincide, devuelve cliente
+	             return cliente;
+	         }
+	     }	System.err.println("Cliente no encontrado"); // Mensaje si no lo encuentra
+	     	return null; 
+	 }
+	
+	public boolean eliminarCliente(int codigo) {
+        Cliente eliminarCliente = buscarCliente(codigo); //uso el método buscarProducto para buscarlo y asignarlo a la variable
+        if (eliminarCliente != null) { //si la variable no esta vacia lo elimino
+            clientes.remove(eliminarCliente); // Con .remove borro un objetode la lista(el asignado como eliminarProducto)
+            System.out.println("Cliente eliminado: " + codigo); //Mensaje de confirmación
+            return true;
+        } else {
+            System.err.println("No se ha eliminado!");// Mensaje de error
+            return false;
+        }
+    }
+	
+	public void guardarClientes() {
+	    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("clientes.txt"))) {
+	        for (Cliente cliente : clientes) {
+	            out.writeObject(cliente); // Serializamos cada objeto Cliente
+	        }
+	        System.out.println("Clientes guardados.");
+	    } catch (IOException e) {
+	        System.err.println("Error al guardar los clientes: " + e.getMessage());
+	    }
+	}
+	
+	public void cargarClientes() {
+	    int maxCodigo = 0; // Declaramos maxCodigo fuera del bloque try
+
+	    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("clientes.txt"))) {
+	        Cliente cliente;
+
+	        while (true) {
+	            cliente = (Cliente) in.readObject(); // Deserializamos cada objeto Cliente
+	            clientes.add(cliente); // Lo añadimos a la lista
+	            
+	            // Actualizamos el máximo código encontrado
+	            if (cliente.getCodigo() > maxCodigo) {
+	                maxCodigo = cliente.getCodigo();
+	            }
+	        }
+	    } catch (EOFException e) {
+	        // Se espera esta excepción para terminar de leer el archivo
+	        System.out.println("Clientes cargados desde el archivo.");
+	    } catch (IOException | ClassNotFoundException e) {
+	        System.err.println("Error al cargar los clientes: " + e.getMessage());
+	    }
+
+	    // Ajustamos el atributo estático contadorCodigo en la clase Cliente
+	    Cliente.setContadorCodigo(maxCodigo + 1); // El siguiente cliente nuevo tendrá un código único
+	}
+}
