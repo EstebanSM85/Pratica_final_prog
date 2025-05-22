@@ -23,7 +23,7 @@ public class Cliente implements Serializable {
 	private String direccion;
 	private String historial;
 	private int codigo;
-	private static int contadorCodigo = 1;// Contador para asignación de códigos únicos
+	
 
 
 
@@ -46,9 +46,7 @@ public class Cliente implements Serializable {
 		this.apellidos=apellidos;
 		this.direccion=direccion;
 		this.fechaAlta = new Date(); //Asigna la fecha actual como fecha de alta
-		this.historial ="";
-		this.codigo = contadorCodigo;  //Asigna un codigo único al crear el cliente
-        contadorCodigo++;				// Incrementa el contador
+		this.historial ="";				// Incrementa el contador
         
      	// validación de el número de telefono
         
@@ -173,14 +171,6 @@ public class Cliente implements Serializable {
 		this.codigo = codigo;
 	}
 	
-
-	public static void setContadorCodigo(int nuevoContador) {
-	    contadorCodigo = nuevoContador; // Actualiza el contador estático
-	}
-
-	public static int getContadorCodigo() {
-		return contadorCodigo;
-	}
 	
 	/**
      * Muestra la información del cliente.

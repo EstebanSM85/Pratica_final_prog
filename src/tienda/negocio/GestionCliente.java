@@ -1,104 +1,165 @@
 package tienda.negocio;
 
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import tienda.modelo.Cliente;
-	
+import tienda.persistencia.Conexion_Mejorada;
+
 public class GestionCliente {
-	 // Lista para almacenar objetos Cliente en una lista llamada clientes
-	private List<Cliente> clientes;
-	
-	// Constructor para inicializar la lista uso un ArrayList porque necesito que sea dinamica 
-	public GestionCliente() {	     
-		this.clientes = new ArrayList<>();
-	}
-	
-	
-	// Método para añadir un cliente   
-	public void agregarCliente(Cliente cliente) {
-		if (cliente != null) { //si el cliente esta correcto lo añado a la lista 'clientes'
-			clientes.add(cliente);
-			System.out.println("Cliente agregado: " + cliente.getNombre()); //Mensaje de confirmación
-	    } else {
-	        System.out.println("El cliente no es válido."); //Mensaje de error
-	    }
-	}
+    private static final Logger LOGGER = Logger.getLogger(GestionCliente.class.getName());
+    private List<Cliente> clientes;
 
-	// Método para listar todos los clientes
-	public void listarClientes() {
-		if (clientes.isEmpty()) {  //Muestro todos los clientes, si no hay saco el mensaje.
-	        System.err.println("No hay clientes registrados.");//mensaje de error
-	    } else {
-	    	for (Cliente cliente : clientes) { //uso el for each  porque queda mas limpio 
-	             System.out.println(cliente.mostrar());//Muestro cada cliente y pongo una separaración para que se vea mas claro
-	             System.out.println(" ");
-	        }
-	    }
-	}
+    public GestionCliente() throws Exception {
+        this.clientes = new ArrayList<>();
+        cargarClientes(); // Al iniciar, cargamos clientes desde la base de datos
+    }
 
-	// Método para buscar un cliente por su codigo
-	public Cliente buscarCliente(int  codigo) { //Cada cliente tiene su codigo unico asignado al crearlo
-	     for (Cliente cliente : clientes) {  //recorro el ArrayList
-	         if (cliente.getCodigo()==codigo) { // cuando el codigo proporcionado coincide, devuelve cliente
-	             return cliente;
-	         }
-	     }	System.err.println("Cliente no encontrado"); // Mensaje si no lo encuentra
-	     	return null; 
-	 }
-	
-	public boolean eliminarCliente(int codigo) {
-        Cliente eliminarCliente = buscarCliente(codigo); //uso el método buscarProducto para buscarlo y asignarlo a la variable
-        if (eliminarCliente != null) { //si la variable no esta vacia lo elimino
-            clientes.remove(eliminarCliente); // Con .remove borro un objetode la lista(el asignado como eliminarProducto)
-            System.out.println("Cliente eliminado: " + codigo); //Mensaje de confirmación
-            return true;
-        } else {
-            System.err.println("No se ha eliminado!");// Mensaje de error
+    // 🔹 Agregar un cliente a la base de datos
+    public void agregarCliente(Cliente cliente) {
+        String query = "INSERT INTO cliente (nombre, apellidos, telefono, direccion, fecha_alta) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conexion = Conexion_Mejorada.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setString(1, cliente.getNombre());
+            ps.setString(2, cliente.getApellidos());
+            ps.setString(3, cliente.getTelefono());
+            ps.setString(4, cliente.getDireccion());
+            ps.setDate(5, new java.sql.Date(cliente.getFechaAlta().getTime()));
+
+            int filasAfectadas = ps.executeUpdate();
+            if (filasAfectadas > 0) {
+                System.out.println("✅ Cliente agregado: " + cliente.getNombre());
+            } else {
+                System.err.println("❌ No se pudo agregar el cliente.");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al agregar cliente", e);
+        }
+    }
+
+    // 🔹 Listar todos los clientes desde la base de datos
+    public void listarClientes() throws TelefonoInvalidoException {
+        String query = "SELECT * FROM cliente";
+
+        try (Connection conexion = Conexion_Mejorada.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (!rs.isBeforeFirst()) {
+                System.err.println("❌ No hay clientes registrados.");
+                return;
+            }
+
+            while (rs.next()) {
+                // ✅ Ahora recuperamos correctamente el código de la BD
+                int codigoBD = rs.getInt("Codigo");
+
+                Cliente cliente = new Cliente(
+                    rs.getString("nombre"),
+                    rs.getString("apellidos"),
+                    rs.getString("telefono"),
+                    rs.getString("direccion"),
+                    rs.getDate("fecha_alta"),
+                    ""
+                );
+
+                cliente.setCodigo(codigoBD); // 🔹 Asigna el código correcto
+                clientes.add(cliente);
+
+                // ✅ Muestra el código al imprimir los clientes
+                System.out.println("Código: " + cliente.getCodigo());
+                System.out.println(cliente.mostrar());
+                System.out.println(" ");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al listar clientes", e);
+        }
+    }
+
+    // 🔹 Buscar un cliente por su código en la base de datos
+    public Cliente buscarCliente(int codigo) throws TelefonoInvalidoException {
+        String query = "SELECT * FROM cliente WHERE Codigo = ?";
+
+        try (Connection conexion = Conexion_Mejorada.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setInt(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Cliente(
+                            rs.getString("nombre"),
+                            rs.getString("apellidos"),
+                            rs.getString("telefono"),
+                            rs.getString("direccion"),
+                            rs.getDate("fecha_alta"),
+                            ""
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al buscar cliente", e);
+        }
+
+        System.err.println("❌ Cliente no encontrado");
+        return null;
+    }
+
+    // 🔹 Eliminar un cliente de la base de datos
+    public boolean eliminarCliente(int codigo) {
+        String query = "DELETE FROM cliente WHERE Codigo = ?";
+
+        try (Connection conexion = Conexion_Mejorada.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query)) {
+
+            ps.setInt(1, codigo);
+            int filasAfectadas = ps.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                System.out.println("✅ Cliente eliminado: " + codigo);
+                return true;
+            } else {
+                System.err.println("❌ No se ha eliminado.");
+                return false;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error al eliminar cliente", e);
             return false;
         }
     }
-	
-	public void guardarClientes() {
-	    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("clientes.txt"))) {
-	        for (Cliente cliente : clientes) {
-	            out.writeObject(cliente); // Serializamos cada objeto Cliente
-	        }
-	        System.out.println("Clientes guardados.");
-	    } catch (IOException e) {
-	        System.err.println("Error al guardar los clientes: " + e.getMessage());
-	    }
-	}
-	
-	public void cargarClientes() {
-	    int maxCodigo = 0; // Declaramos maxCodigo fuera del bloque try
 
-	    try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("clientes.txt"))) {
-	        Cliente cliente;
+    // 🔹 Cargar clientes desde la base de datos al iniciar la aplicación
+    public void cargarClientes() throws TelefonoInvalidoException {
+        clientes.clear(); // Limpiar la lista antes de cargar datos
+        String query = "SELECT * FROM cliente";
 
-	        while (true) {
-	            cliente = (Cliente) in.readObject(); // Deserializamos cada objeto Cliente
-	            clientes.add(cliente); // Lo añadimos a la lista
-	            
-	            // Actualizamos el máximo código encontrado
-	            if (cliente.getCodigo() > maxCodigo) {
-	                maxCodigo = cliente.getCodigo();
-	            }
-	        }
-	    } catch (EOFException e) {
-	        // Se espera esta excepción para terminar de leer el archivo
-	        System.out.println("Clientes cargados desde el archivo.");
-	    } catch (IOException | ClassNotFoundException e) {
-	        System.err.println("Error al cargar los clientes: " + e.getMessage());
-	    }
+        try (Connection conexion = Conexion_Mejorada.conectar();
+             PreparedStatement ps = conexion.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
 
-	    // Ajustamos el atributo estático contadorCodigo en la clase Cliente
-	    Cliente.setContadorCodigo(maxCodigo + 1); // El siguiente cliente nuevo tendrá un código único
-	}
+            while (rs.next()) {
+                Cliente cliente = new Cliente(
+                    rs.getString("nombre"),
+                    rs.getString("apellidos"),
+                    rs.getString("telefono"),
+                    rs.getString("direccion"),
+                    rs.getDate("fecha_alta"),
+                    ""
+                );
+                cliente.setCodigo(rs.getInt("Codigo")); // Aseguramos que el código sea el de la BD
+                clientes.add(cliente);
+            }
+
+            System.out.println("✅ Clientes cargados correctamente desde la BD.");
+        } catch (SQLException e) {
+            System.err.println("❌ Error al cargar clientes desde la base de datos: " + e.getMessage());
+        }
+    }
 }

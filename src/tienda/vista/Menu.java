@@ -4,9 +4,6 @@ package tienda.vista;
  * que cuando añadas productos puedas seleccionar una cantidad de los mismos en vez de de uno en uno,
  * todo esto es más falta de tiempo que ideas*/
 
-import java.sql.Connection;
-import tienda.persistencia.Conexion_Mejorada;
-
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -32,18 +29,8 @@ import tienda.negocio.Transferencia;
 
 public class Menu {
 
-    public static void main(String[] args) {
-    	   // Establecer conexión con la base de datos
-        Connection conexion = Conexion_Mejorada.conectar();
-        if (conexion != null) {
-            System.out.println("✅ Conexión a la base de datos establecida correctamente.");
-        } else {
-            System.err.println("❌ Error al conectar con la base de datos.");
-            return; // Salir si hay un fallo en la conexión
-        }
-
+    public static void main(String[] args) throws Exception {
         GestionCliente gestionClientes = new GestionCliente(); // Se declara e instancia los objetos que se van a utilizar
-        gestionClientes.cargarClientes();//Cargamos los clientes que hayan guardados
         GestionProducto gestionProductos = new GestionProducto();
         gestionProductos.cargarProductos(); // Cargamos los productos que hayan guardados
         GestionPedidos gestionPedidos = new GestionPedidos();
@@ -637,8 +624,8 @@ public class Menu {
                                      	            scanner.nextLine(); // Limpia el buffer del scanner para evitar fallos en la próxima entrada
                                      	        }
                                      	    }
-                                            
-                                            Cliente nuevoCliente = gestionClientes.buscarCliente(nuevoCodigoCliente);
+                                           
+                                          /*  Cliente nuevoCliente = gestionClientes.buscarCliente(codigoPedido);
 
                                             if (nuevoCliente != null) { // Si lo encuentra
 
@@ -647,7 +634,7 @@ public class Menu {
                                             } else {
                                                 System.err.println("Cliente no encontrado.");//Mensaje de  error
                                             }
-                                            break;
+                                            break;*/
 
                                         case "2": // Modificar productos
                                             List<Producto> nuevosProductos = new ArrayList<>();
@@ -826,16 +813,8 @@ public class Menu {
                 case "5": //Cierra el programa
                     System.out.println("\nSaliendo del sistema...");
                     System.out.println("Guardando datos antes de salir...");
-                    gestionClientes.guardarClientes();
                     gestionProductos.guardarProductos();
                     gestionPedidos.guardarPedidos();
-                    try {
-                        if (conexion != null) conexion.close();
-                        System.out.println("🔒 Conexión cerrada correctamente.");
-                    } catch (Exception e) {
-                        System.err.println("⚠️ Error al cerrar la conexión.");
-                    }
-
                     System.out.println("¡Hasta pronto!");
                     System.exit(0);
                     break;
