@@ -11,6 +11,7 @@ public abstract class Producto implements Serializable {
     private Date caducidad; 
     private String estado;
     private Date fechaEnvase;
+    private int id;
     
     //Constructor
     public Producto(String nombre, double precio, Date caducidad, String estado,Date fechaEnvase) {
@@ -62,6 +63,12 @@ public abstract class Producto implements Serializable {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+	
+
+	public void setCodigo(int codigo) {
+	    this.id = codigo;
+	}
+
 
 	public void modificarFechaEnvase(String nuevaFechaEnvase)/* throws java.text.ParseException*/ { // captura la excepcion quien llama al método
 	    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -81,6 +88,11 @@ public abstract class Producto implements Serializable {
 	public abstract String detalle_producto();
 	
 	public abstract void modificarAtributosEspecificos(Scanner scanner);
+
+	public int getCodigo() {
+		
+		return id;
+	}
 
 
 }

@@ -32,9 +32,7 @@ public class Menu {
     public static void main(String[] args) throws Exception {
         GestionCliente gestionClientes = new GestionCliente(); // Se declara e instancia los objetos que se van a utilizar
         GestionProducto gestionProductos = new GestionProducto();
-        gestionProductos.cargarProductos(); // Cargamos los productos que hayan guardados
         GestionPedidos gestionPedidos = new GestionPedidos();
-        gestionPedidos.cargarPedidos(); // Cargamos los pedidos guardados
 
         Scanner scanner = new Scanner(System.in); 
         String opcion; // Se declara la variable
@@ -581,7 +579,7 @@ public class Menu {
 
                      	    while (!pedidoValidoModificar) {
                      	        try { //Si se introduce un string tenemos la excepcion InputMismatchException
-                     	            System.out.print("\nIngrese el código del pedido a modificar2: ");
+                     	            System.out.print("\nIngrese el código del pedido a modificar: ");
                      	           pedidoAModificar = scanner.nextInt(); // Intenta leer el código como entero
                      	           pedidoValidoModificar = true; // Si llega aquí, la entrada es válida
                      	        } catch (java.util.InputMismatchException e) {
@@ -813,8 +811,6 @@ public class Menu {
                 case "5": //Cierra el programa
                     System.out.println("\nSaliendo del sistema...");
                     System.out.println("Guardando datos antes de salir...");
-                    gestionProductos.guardarProductos();
-                    gestionPedidos.guardarPedidos();
                     System.out.println("¡Hasta pronto!");
                     System.exit(0);
                     break;
